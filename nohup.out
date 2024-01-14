@@ -1,0 +1,132 @@
+
+> learning-platform@1.0.0 start /home/alaa/Desktop/learning platform
+> node server.js
+
+Thu, 17 Jun 2021 16:39:28 GMT body-parser deprecated undefined extended: provide extended option at server.js:32:17
+ConnectionRefusedError [SequelizeConnectionRefusedError]: connect ECONNREFUSED 127.0.0.1:3306
+    at ConnectionManager.connect (/home/alaa/Desktop/learning platform/node_modules/sequelize/lib/dialects/mysql/connection-manager.js:116:17)
+    at processTicksAndRejections (internal/process/task_queues.js:95:5)
+    at async ConnectionManager._connect (/home/alaa/Desktop/learning platform/node_modules/sequelize/lib/dialects/abstract/connection-manager.js:318:24)
+    at async /home/alaa/Desktop/learning platform/node_modules/sequelize/lib/dialects/abstract/connection-manager.js:250:32
+    at async ConnectionManager.getConnection (/home/alaa/Desktop/learning platform/node_modules/sequelize/lib/dialects/abstract/connection-manager.js:280:7)
+    at async /home/alaa/Desktop/learning platform/node_modules/sequelize/lib/sequelize.js:613:26
+    at async MySQLQueryInterface.createTable (/home/alaa/Desktop/learning platform/node_modules/sequelize/lib/dialects/abstract/query-interface.js:225:12)
+    at async Function.sync (/home/alaa/Desktop/learning platform/node_modules/sequelize/lib/model.js:1300:5)
+    at async Sequelize.sync (/home/alaa/Desktop/learning platform/node_modules/sequelize/lib/sequelize.js:793:35) {
+  parent: Error: connect ECONNREFUSED 127.0.0.1:3306
+      at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1148:16) {
+    errno: -111,
+    code: 'ECONNREFUSED',
+    syscall: 'connect',
+    address: '127.0.0.1',
+    port: 3306,
+    fatal: true
+  },
+  original: Error: connect ECONNREFUSED 127.0.0.1:3306
+      at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1148:16) {
+    errno: -111,
+    code: 'ECONNREFUSED',
+    syscall: 'connect',
+    address: '127.0.0.1',
+    port: 3306,
+    fatal: true
+  }
+}
+
+> learning-platform@1.0.0 start /home/alaa/Desktop/learning platform
+> node server.js
+
+Thu, 17 Jun 2021 16:40:30 GMT body-parser deprecated undefined extended: provide extended option at server.js:32:17
+ConnectionRefusedError [SequelizeConnectionRefusedError]: connect ECONNREFUSED 127.0.0.1:3306
+    at ConnectionManager.connect (/home/alaa/Desktop/learning platform/node_modules/sequelize/lib/dialects/mysql/connection-manager.js:116:17)
+    at processTicksAndRejections (internal/process/task_queues.js:95:5)
+    at async ConnectionManager._connect (/home/alaa/Desktop/learning platform/node_modules/sequelize/lib/dialects/abstract/connection-manager.js:318:24)
+    at async /home/alaa/Desktop/learning platform/node_modules/sequelize/lib/dialects/abstract/connection-manager.js:250:32
+    at async ConnectionManager.getConnection (/home/alaa/Desktop/learning platform/node_modules/sequelize/lib/dialects/abstract/connection-manager.js:280:7)
+    at async /home/alaa/Desktop/learning platform/node_modules/sequelize/lib/sequelize.js:613:26
+    at async MySQLQueryInterface.createTable (/home/alaa/Desktop/learning platform/node_modules/sequelize/lib/dialects/abstract/query-interface.js:225:12)
+    at async Function.sync (/home/alaa/Desktop/learning platform/node_modules/sequelize/lib/model.js:1300:5)
+    at async Sequelize.sync (/home/alaa/Desktop/learning platform/node_modules/sequelize/lib/sequelize.js:793:35) {
+  parent: Error: connect ECONNREFUSED 127.0.0.1:3306
+      at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1148:16) {
+    errno: -111,
+    code: 'ECONNREFUSED',
+    syscall: 'connect',
+    address: '127.0.0.1',
+    port: 3306,
+    fatal: true
+  },
+  original: Error: connect ECONNREFUSED 127.0.0.1:3306
+      at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1148:16) {
+    errno: -111,
+    code: 'ECONNREFUSED',
+    syscall: 'connect',
+    address: '127.0.0.1',
+    port: 3306,
+    fatal: true
+  }
+}
+
+> learning-platform@1.0.0 start /home/alaa/Desktop/learning platform
+> node server.js
+
+Tue, 22 Jun 2021 06:55:16 GMT body-parser deprecated undefined extended: provide extended option at server.js:32:17
+connected DATABASE
+localhost:8080
+
+> learning-platform@1.0.0 start /home/alaa/Desktop/learning platform
+> node server.js
+
+Tue, 22 Jun 2021 11:06:25 GMT body-parser deprecated undefined extended: provide extended option at server.js:32:17
+connected DATABASE
+localhost:8080
+(node:18227) UnhandledPromiseRejectionWarning: TypeError: Cannot read property 'room' of null
+    at Socket.<anonymous> (/home/alaa/Desktop/learning platform/socket/groupChat.js:11:22)
+    at Socket.emit (events.js:375:28)
+    at Socket.emitUntyped (/home/alaa/Desktop/learning platform/node_modules/socket.io/dist/typed-events.js:69:22)
+    at /home/alaa/Desktop/learning platform/node_modules/socket.io/dist/socket.js:428:39
+    at processTicksAndRejections (internal/process/task_queues.js:77:11)
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:18227) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). To terminate the node process on unhandled promise rejection, use the CLI flag `--unhandled-rejections=strict` (see https://nodejs.org/api/cli.html#cli_unhandled_rejections_mode). (rejection id: 1)
+(node:18227) [DEP0018] DeprecationWarning: Unhandled promise rejections are deprecated. In the future, promise rejections that are not handled will terminate the Node.js process with a non-zero exit code.
+(node:18227) UnhandledPromiseRejectionWarning: TypeError: Cannot read property 'room' of null
+    at Socket.<anonymous> (/home/alaa/Desktop/learning platform/socket/groupChat.js:11:22)
+    at Socket.emit (events.js:375:28)
+    at Socket.emitUntyped (/home/alaa/Desktop/learning platform/node_modules/socket.io/dist/typed-events.js:69:22)
+    at /home/alaa/Desktop/learning platform/node_modules/socket.io/dist/socket.js:428:39
+    at processTicksAndRejections (internal/process/task_queues.js:77:11)
+(node:18227) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). To terminate the node process on unhandled promise rejection, use the CLI flag `--unhandled-rejections=strict` (see https://nodejs.org/api/cli.html#cli_unhandled_rejections_mode). (rejection id: 2)
+[ 2 ]
+[ 2 ]
+[ 2 ]
+(node:18227) UnhandledPromiseRejectionWarning: TypeError: Cannot read property 'room' of null
+    at Socket.<anonymous> (/home/alaa/Desktop/learning platform/socket/groupChat.js:11:22)
+    at Socket.emit (events.js:375:28)
+    at Socket.emitUntyped (/home/alaa/Desktop/learning platform/node_modules/socket.io/dist/typed-events.js:69:22)
+    at /home/alaa/Desktop/learning platform/node_modules/socket.io/dist/socket.js:428:39
+    at processTicksAndRejections (internal/process/task_queues.js:77:11)
+(node:18227) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). To terminate the node process on unhandled promise rejection, use the CLI flag `--unhandled-rejections=strict` (see https://nodejs.org/api/cli.html#cli_unhandled_rejections_mode). (rejection id: 3)
+[ 2, 3 ]
+(node:18227) UnhandledPromiseRejectionWarning: TypeError: Cannot read property 'room' of null
+    at Socket.<anonymous> (/home/alaa/Desktop/learning platform/socket/groupChat.js:11:22)
+    at Socket.emit (events.js:375:28)
+    at Socket.emitUntyped (/home/alaa/Desktop/learning platform/node_modules/socket.io/dist/typed-events.js:69:22)
+    at /home/alaa/Desktop/learning platform/node_modules/socket.io/dist/socket.js:428:39
+    at processTicksAndRejections (internal/process/task_queues.js:77:11)
+(node:18227) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). To terminate the node process on unhandled promise rejection, use the CLI flag `--unhandled-rejections=strict` (see https://nodejs.org/api/cli.html#cli_unhandled_rejections_mode). (rejection id: 4)
+[ 2, 3 ]
+(node:18227) UnhandledPromiseRejectionWarning: TypeError: Cannot read property 'room' of null
+    at Socket.<anonymous> (/home/alaa/Desktop/learning platform/socket/groupChat.js:11:22)
+    at Socket.emit (events.js:375:28)
+    at Socket.emitUntyped (/home/alaa/Desktop/learning platform/node_modules/socket.io/dist/typed-events.js:69:22)
+    at /home/alaa/Desktop/learning platform/node_modules/socket.io/dist/socket.js:428:39
+    at processTicksAndRejections (internal/process/task_queues.js:77:11)
+(node:18227) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). To terminate the node process on unhandled promise rejection, use the CLI flag `--unhandled-rejections=strict` (see https://nodejs.org/api/cli.html#cli_unhandled_rejections_mode). (rejection id: 5)
+(node:18227) UnhandledPromiseRejectionWarning: TypeError: Cannot read property 'room' of null
+    at Socket.<anonymous> (/home/alaa/Desktop/learning platform/socket/groupChat.js:11:22)
+    at Socket.emit (events.js:375:28)
+    at Socket.emitUntyped (/home/alaa/Desktop/learning platform/node_modules/socket.io/dist/typed-events.js:69:22)
+    at /home/alaa/Desktop/learning platform/node_modules/socket.io/dist/socket.js:428:39
+    at processTicksAndRejections (internal/process/task_queues.js:77:11)
+(node:18227) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). To terminate the node process on unhandled promise rejection, use the CLI flag `--unhandled-rejections=strict` (see https://nodejs.org/api/cli.html#cli_unhandled_rejections_mode). (rejection id: 6)
+[ 2, 3 ]

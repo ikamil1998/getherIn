@@ -1,0 +1,38 @@
+
+message:
+room 
+senderId
+senderImage
+senderName
+type
+msg
+img
+video
+recordroup
+question
+
+question:
+1.type:single, select 
+2.body
+3. ID
+
+
+options:
+1. body
+2. questionID
+
+optionsGroup:
+1. optionId
+2. groupdId
+3. userId
+
+
+socket:
+selectOption:
+questionID
+groupId
+userId
+optionId
+
+
+

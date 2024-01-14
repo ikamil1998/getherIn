@@ -1,0 +1,38 @@
+{
+  "development": {
+    "username": "root",
+    "password": "root",
+    "database": "db",
+    "host": "127.0.0.1",
+    "dialect": "mysql",
+    "logging": false,
+    "define": {
+      "charset": "utf8",
+      "collate": "utf8_general_ci"
+    }
+  },
+  "test": {
+    "username": "root",
+    "password": "root",
+    "database": "db",
+    "host": "127.0.0.1",
+    "dialect": "mysql",
+    "logging": false,
+    "define": {
+      "charset": "utf8",
+      "collate": "utf8_general_ci"
+    }
+  },
+  "production": {
+    "username": "gathshyt_root",
+    "password": "A8pKhU45wuLDV2S",
+    "database": "gathshyt_db",
+    "host": "66.29.140.167",
+    "dialect": "mysql",
+    "logging": false,
+    "define": {
+      "charset": "utf8",
+      "collate": "utf8_general_ci"
+    }
+  }
+}
