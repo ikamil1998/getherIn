@@ -1,7 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class Achievments extends Model {
+  class AchievmentsCart extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -15,14 +15,14 @@ module.exports = (sequelize, DataTypes) => {
         onUpdate: "CASCADE",
       });
       this.hasMany(models.Image, {
-        foreignKey: "achievementId",
+        foreignKey: "achievementCartId",
         constraints: true,
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
       });
     }
   }
-  Achievments.init(
+  AchievmentsCart.init(
     {
       schoolName: {
         type: DataTypes.STRING,
@@ -131,11 +131,11 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "Achievments",
-      tableName: "achievments",
+      modelName: "AchievmentsCart",
+      tableName: "achievmentsCart",
       charset: "utf8",
       collate: "utf8_unicode_ci",
     }
   );
-  return Achievments;
+  return AchievmentsCart;
 };

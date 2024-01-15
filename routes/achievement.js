@@ -20,5 +20,5 @@ router.post(
     { name: "projectsImages", maxCount: 10 },
     { name: "performingTasksImages", maxCount: 10 }
   ]),
-  achievmentsController.createAchievments
+  achievmentsController.createAchievmentsCart
 );
