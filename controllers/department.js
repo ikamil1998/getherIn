@@ -61,7 +61,7 @@ exports.get = async (req, res, next) => {
           url: department.dataValues.url,
           members_count: users.count,
           Groups: data,
-          achievment: { shared: achievmentDepartment ? true : false, id : achievmentDepartment?.id },
+          achievment: { shared: achievmentDepartment ? true : false, id : achievmentDepartment.id },
         });
       } else {
         const err = new Error(
