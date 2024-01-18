@@ -67,7 +67,7 @@ exports.updateView = async (req, res) => {
   return res.status(200).json({ message: "Updated successfully" });
 };
 exports.getAllAchievments = async (req, res) => {
-  const userId = req.tokenUserId;
+  const userId = 1;
   const { limit, offset } = handlePaginationSort(req.query);
   const achievments = await Model.Achievments.findAll({
     where: { userId },
