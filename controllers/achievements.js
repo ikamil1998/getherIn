@@ -36,7 +36,7 @@ const selectAll = [
 exports.updateView = async (req, res) => {
   const userId = 1;
   const { achievmentId } = req.params;
-  const departments = req.body.departmentIds;
+  const { departmentId } = req.body;
   updateViewSetting(req.body);
   const achievment = await Model.Achievments.findOne({
     where: { id: achievmentId, userId },
@@ -44,11 +44,21 @@ exports.updateView = async (req, res) => {
   if (!achievment) {
     return res.status(404).json({ message: "Achievment not found" });
   }
-  if (departments && departments.length) {
-    const bulk = departments.map(
-      ele({ departmentId: ele, achievmentId: achievment.id })
-    );
-    await await Model.AchievementDepartment.bulkCreate(bulk);
+  if (departmentId) {
+    const exist = await Model.AchievementDepartment.findOne({
+      where: { departmentId, userId },
+    });
+    if (exist) {
+      return res
+        .status(400)
+        .json({ message: "You already shared achievment wit this department" });
+    }
+
+    await Model.AchievementDepartment.create({
+      departmentId,
+      achievmentId: achievment.id,
+      userId,
+    });
   }
   await Model.Achievments.update(
     { view: req.body.view },
@@ -126,4 +136,28 @@ exports.deleteAchievement = async (req, res) => {
   }
   await Model.Achievments.destroy({ where: { userId, id: achievmentId } });
   return res.status(203).json({ message: "Deleted Successfullt" });
+};
+exports.getMyDepartment = async (req, res) => {
+  const userId = 1;
+  const { limit, offset } = handlePaginationSort(req.query);
+  const departments = await Model.UserDepartment.findAll({
+    where: { userId },
+    offset,
+    limit,
+    include: {
+      model: Model.Department,
+      attributes: ["name"],
+    },
+  });
+  const count = await Model.UserDepartment.count({
+    where: { userId },
+  });
+
+  for (let dep of departments) {
+    const addedValue = await Model.AchievementDepartment.findOne({
+      where: { departmentId: dep.departmentId },
+    });
+    dep.dataValues.added = addedValue ? true : false;
+  }
+  return res.status(200).json({ data: departments, count });
 };

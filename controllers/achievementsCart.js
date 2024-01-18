@@ -1,6 +1,6 @@
 const Model = require("../models");
 const { AchievmentsCart } = require("../models/achievmentsCart");
-const { educationalStages, semesters } = require("../utils/constant");
+const { educationalStages, semesters, subjectsData, grade } = require("../utils/constant");
 const {
   createAchievementPage1,
   createAchievementPage2,
@@ -267,13 +267,25 @@ exports.getCartData = async (req, res) => {
 exports.getEducationalStages = async (req, res) => {
   return res.status(200).json({ data: educationalStages });
 };
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 exports.getSemesters = async (req, res) => {
   return res.status(200).json({ data: semesters });
 };
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 exports.getGrades = async (req, res) => {
   const stage = req.query.stage || "none";
-  const existingStage = educationalStages[`${stage}`];
-  if (!existingStage)
+  const existingGrade = grade[`${stage}`];
+  if (!existingGrade)
     return res.status(400).json({ message: "Stage not found" });
-  return res.status(200).json({ data: existingStage });
+  return res.status(200).json({ data: existingGrade });
 };
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+exports.getSubjects = async (req, res)=>{
+  const {stage} = req.query
+  if(!subjectsData[`${stage}`])return res.status(404).json({message :"Stage not found"})
+  return res.status(200).json({data : subjectsData[`${stage}`]})
+}
+

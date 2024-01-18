@@ -7,7 +7,7 @@ const semesters = [
     {ar: "الفصل الثاني", en:"Second semester"},
     {ar: "الفصل الثالث", en:"Third semester"},
 ]
-const grade = [
+const grade = 
     {
         "secondary" : [
             {ar: "اول ثانوي", en :"First secondary"},
@@ -20,5 +20,38 @@ const grade = [
             {ar: "ثالث متوسط", en :"Third middle"},
         ]
     }
-]
-module.exports = {educationalStages, grade, semesters}
+
+const subjectsData = {
+    middle : [
+        "دراسات اسلاميه",
+        "دراسات اجتماعيه",
+        "علوم",
+        "رياضيات",
+        "مهارات رقميه",
+        "لغتي",
+        "المهارات الحياتيه",
+        "التفكير الناقد",
+        "تربيه بدنيه",
+    ],
+    secondary : [
+        "التفكير الناقد",
+        "التقنيه الرقميه",
+        " علم البيئة",
+        "الفيزياء",
+        "الكيمياء",
+        "الأحياء",
+        "الرياضايات",
+        "اللغة الأنجليزيه",
+        "التربيه المهنيه",
+        "الحاسبات والهندسه",
+        "ادارة الاعمال",
+        "مسار الصحه",
+        "دراسات اسلاميه",
+        "الفنون",
+        "كفايات لغوية",
+        "تربيه بدنيه",
+        "ممواطنه رقمية",
+        "علوم الأرض وافضاء"
+    ]
+}
+module.exports = {educationalStages, grade, semesters, subjectsData}

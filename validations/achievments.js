@@ -74,7 +74,7 @@ exports.createAchievementPage4 = (achievment) => {
 exports.updateViewSetting = (achievment) => {
   const schema = Joi.object({
     view: Joi.number().required().valid(0, 1, 2, 3),
-    departmentIds : Joi.array().items(Joi.number()).allow([])
+    departmentId : Joi.number()
   });
   const { error } = schema.validate(achievment);
   if (error) {

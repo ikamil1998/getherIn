@@ -26,10 +26,9 @@ router.post(
 );
 router.get("/",asyncWrapper(achievmentsController.getCartData));           
 
-  // isAuth,
-  // router.get("/educationalStage",asyncWrapper(achievmentsController.getCartData));           
-  // router.get("/",asyncWrapper(achievmentsController.getCartData));           
-  // router.get("/",asyncWrapper(achievmentsController.getCartData));           
-  // router.get("/",asyncWrapper(achievmentsController.getCartData));           
+  router.get("/educationalStage",asyncWrapper(achievmentsController.getEducationalStages));           
+  router.get("/subjects",asyncWrapper(achievmentsController.getSubjects));           
+  router.get("/semister",asyncWrapper(achievmentsController.getSemesters));           
+  router.get("/grades",asyncWrapper(achievmentsController.getGrades));           
 
 module.exports = router;
