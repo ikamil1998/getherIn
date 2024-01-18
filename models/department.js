@@ -26,6 +26,12 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
       });
+      this.hasMany(models.AchievementDepartment, {
+        foreignKey: "departmentId",
+        constraints: true,
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
+      });
     }
     // toJSON() {
     //   return {

@@ -23,6 +23,7 @@ const dashboardRoutes = require("./routes/dashboard");
 const ComplaintRoutes = require("./routes/complaint");
 const ChatComplaintRoutes = require("./routes/chatComplaint");
 const IAPRoutes = require("./routes/IAP");
+const achievementCartRoutes = require("./routes/achievementCart.js");
 const { changeValidForConsumerPackage } = require("./utils");
 
 const app = express();
@@ -84,6 +85,7 @@ app.use("/dashboard", dashboardRoutes);
 app.use("/complaint", ComplaintRoutes);
 app.use("/chatComplaint", ChatComplaintRoutes);
 app.use("/iap", IAPRoutes);
+app.use("/achievments", achievementCartRoutes);
 app.use("/", rootRoutes);
 
 require("./socket/groupChat.js")(io);

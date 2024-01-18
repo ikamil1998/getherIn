@@ -20,6 +20,12 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
       });
+      this.hasMany(models.Image, {
+        foreignKey: "AchievementDepartment",
+        constraints: true,
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
+      });
     }
   }
   Achievments.init(
@@ -124,10 +130,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         defaultValue: null,
       },
-      submited: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
+      view: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
       },
+      pdf : {
+        type: DataTypes.STRING,
+        defaultValue: null,
+      }
     },
     {
       sequelize,

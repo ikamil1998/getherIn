@@ -1,15 +1,15 @@
 const Joi = require("joi");
-export const createAchievementPage1 = (achievment) => {
+exports.createAchievementPage1 = (achievment) => {
   const schema = Joi.object({
-    schoolName: Joi.string().trim().allow(""),
-    city: Joi.string().trim().allow(""),
-    fullName: Joi.string().trim().allow(""),
-    age: Joi.string().trim().allow(""),
-    stage: Joi.string().trim().allow(""),
-    academicYear: Joi.string().trim().allow(""),
-    semister: Joi.string().trim().allow(""),
-    grade: Joi.string().trim().allow(""),
-    pageNumber: Joi.number().trim().required().valid(1),
+    schoolName: Joi.string().trim().required(),
+    city: Joi.string().trim().required(),
+    fullName: Joi.string().trim().required(),
+    age: Joi.string().trim().required(),
+    stage: Joi.string().trim().required(),
+    academicYear: Joi.string().trim().required(),
+    semister: Joi.string().trim().required(),
+    grade: Joi.string().trim().required(),
+    pageNumber: Joi.number().required().valid(1),
   });
   const { error } = schema.validate(achievment);
   if (error) {
@@ -19,11 +19,11 @@ export const createAchievementPage1 = (achievment) => {
   }
   return;
 };
-export const createAchievementPage2 = (achievment) => {
+exports.createAchievementPage2 = (achievment) => {
   const schema = Joi.object({
-    hoopies: Joi.string().trim().allow(""),
-    skills: Joi.string().trim().allow(""),
-    targets: Joi.string().trim().allow(""),
+    hoopies: Joi.string().trim().required(),
+    skills: Joi.string().trim().required(),
+    targets: Joi.string().trim().required(),
     pageNumber: Joi.number().required().valid(2),
   });
   const { error } = schema.validate(achievment);
@@ -34,7 +34,7 @@ export const createAchievementPage2 = (achievment) => {
   }
   return;
 };
-export const createAchievementPage3 = (achievment) => {
+exports.createAchievementPage3 = (achievment) => {
   const schema = Joi.object({
     introduction: Joi.string().trim().allow(""),
     skills: Joi.string().trim().allow(""),
@@ -55,14 +55,27 @@ export const createAchievementPage3 = (achievment) => {
   }
   return;
 };
-export const createAchievementPage4 = (achievment) => {
+exports.createAchievementPage4 = (achievment) => {
   const schema = Joi.object({
-    subject: Joi.string().trim().allow(""),
-    activities: Joi.string().trim().allow(""),
-    projects: Joi.string().trim().allow(""),
-    performingTasks: Joi.string().trim().allow(""),
+    subject: Joi.string().trim().required(),
+    activities: Joi.string().trim().required(),
+    projects: Joi.string().trim().required(),
+    performingTasks: Joi.string().trim().required(),
     comments: Joi.string().trim().allow(""),
     pageNumber: Joi.number().required().valid(4),
+  });
+  const { error } = schema.validate(achievment);
+  if (error) {
+    const validationError = new Error(error.details[0].message);
+    validationError.statusCode = 400;
+    throw error;
+  }
+  return;
+};
+exports.updateViewSetting = (achievment) => {
+  const schema = Joi.object({
+    view: Joi.number().required().valid(0, 1, 2, 3),
+    departmentIds : Joi.array().items(Joi.number()).allow([])
   });
   const { error } = schema.validate(achievment);
   if (error) {

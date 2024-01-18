@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       this.hasMany(models.Department, { foreignKey: "userId" });
       this.hasMany(models.UserDepartment, { foreignKey: "userId" });
+      this.hasMany(models.AchievementDepartment, { foreignKey: "userId" });
       this.hasMany(models.Group, {
         as: "master",
         foreignKey: "master",

@@ -9,18 +9,6 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      this.belongsTo(models.AchievmentsCart, {
-        foreignKey: "achievmentsCartId",
-        constraints: true,
-        onDelete: "CASCADE",
-        onUpdate: "CASCADE",
-      });
-      this.belongsTo(models.Achievments, {
-        foreignKey: "achievmentsId",
-        constraints: true,
-        onDelete: "CASCADE",
-        onUpdate: "CASCADE",
-      });
     }
   }
   Image.init(
