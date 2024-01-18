@@ -24,7 +24,7 @@ router.post(
   ),
   asyncWrapper(achievmentsController.createAchievmentsCart)
 );
-router.get("/",asyncWrapper(achievmentsController.getCartData));           
+router.get("/", isAuth,asyncWrapper(achievmentsController.getCartData));           
 
   router.get("/educationalStage",isAuth, asyncWrapper(achievmentsController.getEducationalStages));           
   router.get("/subjects",isAuth, asyncWrapper(achievmentsController.getSubjects));           
