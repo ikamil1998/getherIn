@@ -34,7 +34,7 @@ const selectAll = [
   ),
 ];
 exports.updateView = async (req, res) => {
-  const userId = 1;
+  const userId = req.tokenUserId;
   const { achievmentId } = req.params;
   const { departmentId } = req.body;
   updateViewSetting(req.body);
@@ -67,7 +67,7 @@ exports.updateView = async (req, res) => {
   return res.status(200).json({ message: "Updated successfully" });
 };
 exports.getAllAchievments = async (req, res) => {
-  const userId = 1;
+  const userId = req.tokenUserId;
   const { limit, offset } = handlePaginationSort(req.query);
   const achievments = await Model.Achievments.findAll({
     where: { userId },
@@ -80,7 +80,7 @@ exports.getAllAchievments = async (req, res) => {
   return res.status(200).json({ data: achievments, count: totalItems });
 };
 exports.getOneAchievement = async (req, res) => {
-  const userId = 1;
+  const userId = req.tokenUserId;
   const { achievmentId } = req.params;
   const { pageNumber } = req.query;
   const achievement = await Model.Achievments.findOne({
@@ -126,7 +126,7 @@ exports.getOneAchievement = async (req, res) => {
   return res.status(200).json({ data: achievement });
 };
 exports.deleteAchievement = async (req, res) => {
-  const userId = 1;
+  const userId = req.tokenUserId;
   const { achievmentId } = req.params;
   const achievement = await Model.Achievments.findOne({
     where: { userId, id: achievmentId },
@@ -138,7 +138,7 @@ exports.deleteAchievement = async (req, res) => {
   return res.status(203).json({ message: "Deleted Successfullt" });
 };
 exports.getMyDepartment = async (req, res) => {
-  const userId = 1;
+  const userId = req.tokenUserId;
   const { limit, offset } = handlePaginationSort(req.query);
   const departments = await Model.UserDepartment.findAll({
     where: { userId },
