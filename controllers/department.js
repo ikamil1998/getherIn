@@ -1,6 +1,5 @@
-
 "use strict";
-const { Op } = require('sequelize')
+const { Op } = require("sequelize");
 
 const { Department, User, Group, ConsumerPackage } = require("../models");
 const Model = require("../models");
@@ -8,20 +7,21 @@ const {
   checkValidate,
   checkTeacherAccunt,
   isAccessProcess,
-  makeCodeCode
+  makeCodeCode,
 } = require("../utils");
 const { admin } = require("../utils/firebase-config");
-const { data } = require('../validations/package');
+const { data } = require("../validations/package");
 // * done
 const ITEMS_PER_PAGE = 10;
 
 exports.get = async (req, res, next) => {
   try {
+    const userId = req.tokenUserId;
     checkValidate(req);
     const { id } = req.params;
     const department = await Department.findOne({
       where: { id },
-      attributes: ["id", "name", "code", 'url'],
+      attributes: ["id", "name", "code", "url"],
       include: [
         // {
         //   model: User,
@@ -36,15 +36,33 @@ exports.get = async (req, res, next) => {
     });
     if (department) {
       const isValid = await isAccessProcess("department", id);
-      let data = []
+      let data = [];
       if (isValid) {
-        const users = await Model.UserDepartment.findAndCountAll({ where: { departmentId: department.id } })
+        const users = await Model.UserDepartment.findAndCountAll({
+          where: { departmentId: department.id },
+        });
         for (let group of department.dataValues.Groups) {
-          const users_group = await Model.UserGroup.findAndCountAll({ where: { groupId: group.dataValues.id } })
-          data.push({ id: group.dataValues.id, name: group.dataValues.name, members_count: users_group.count })
+          const users_group = await Model.UserGroup.findAndCountAll({
+            where: { groupId: group.dataValues.id },
+          });
+          data.push({
+            id: group.dataValues.id,
+            name: group.dataValues.name,
+            members_count: users_group.count,
+          });
         }
-
-        res.status(200).json({ id: department.dataValues.id, name: department.dataValues.name, code: department.dataValues.code, url: department.dataValues.url, members_count: users.count, Groups: data });
+        const achievmentDepartment = await Model.AchievementDepartment.findOne({
+          where: { departmentId: id, userId },
+        });
+        res.status(200).json({
+          id: department.dataValues.id,
+          name: department.dataValues.name,
+          code: department.dataValues.code,
+          url: department.dataValues.url,
+          members_count: users.count,
+          Groups: data,
+          achievment: { shared: achievmentDepartment ? true : false, id : achievmentDepartment?.id },
+        });
       } else {
         const err = new Error(
           "Your package has expired, you must renew the package "
@@ -98,7 +116,7 @@ exports.getAll = async (req, res, next) => {
       }
       res.status(200).send(data);
     } else if (req.tokenUserKind === "teacher") {
-      let container = []
+      let container = [];
       const data = await Model.Department.findAll({
         // raw: true,
         where: { userId: req.tokenUserId },
@@ -109,8 +127,10 @@ exports.getAll = async (req, res, next) => {
         },
       });
       for (let department of data) {
-        const users = await Model.UserDepartment.findAndCountAll({ where: { departmentId: department.id } })
-        container.push({ ...department.dataValues, "user_counter": users.count })
+        const users = await Model.UserDepartment.findAndCountAll({
+          where: { departmentId: department.id },
+        });
+        container.push({ ...department.dataValues, user_counter: users.count });
       }
       res.status(200).send(container);
     }
@@ -147,22 +167,23 @@ exports.create = async (req, res, next) => {
         let code = req.body.code;
         const name = req.body.name;
         if (!code) {
-          code = makeCodeCode(6)
+          code = makeCodeCode(6);
           while (1) {
-            const dep1 = await Department.findOne({ where: { code } })
+            const dep1 = await Department.findOne({ where: { code } });
             if (!dep1) {
               break;
             }
           }
-        }
-        else {
+        } else {
           const re = new RegExp("^[A-Z0-9]+(?:List)?$");
           if (!re.test(code)) {
-            const err = new Error("department must has must be include capital Letter and number only");
+            const err = new Error(
+              "department must has must be include capital Letter and number only"
+            );
             err.statusCode = 409;
             throw err;
           }
-          const dep = await Department.findOne({ where: { code } })
+          const dep = await Department.findOne({ where: { code } });
           if (dep) {
             const err = new Error("department code exist");
             err.statusCode = 409;
@@ -228,7 +249,9 @@ exports.update = async (req, res, next) => {
         error.statusCode = 400;
         throw error;
       }
-      const data = await Model.Department.findOne({ where: { code, id: { value: { [Op.ne]: id } } } });
+      const data = await Model.Department.findOne({
+        where: { code, id: { value: { [Op.ne]: id } } },
+      });
       if (data) {
         const error = new Error(
           "you can't choose this code because it's exist"
@@ -239,7 +262,9 @@ exports.update = async (req, res, next) => {
       department.code = code;
     }
     if (name) {
-      const data = await Model.Department.findOne({ where: { name, userId: req.tokenUserId } });
+      const data = await Model.Department.findOne({
+        where: { name, userId: req.tokenUserId },
+      });
       if (data) {
         const error = new Error(
           "you can't choose this name because it's exist"
@@ -294,13 +319,19 @@ exports.addUser = async (req, res, next) => {
         where: { userId: req.tokenUserId, departmentId: req.departmentId },
       });
       if (!handle) {
-        const department = await Model.Department.findOne({ where: { id: req.departmentId } })
-        const data1 = await Model.ConsumerPackage.findOne({ where: { userId: department.userId } })
-        const data2 = await Model.Package.findOne({ where: { id: data1.packageId } })
-console.log(department.number_of_student)       
- if (department.number_of_student < data2.number_of_students) {
+        const department = await Model.Department.findOne({
+          where: { id: req.departmentId },
+        });
+        const data1 = await Model.ConsumerPackage.findOne({
+          where: { userId: department.userId },
+        });
+        const data2 = await Model.Package.findOne({
+          where: { id: data1.packageId },
+        });
+        console.log(department.number_of_student);
+        if (department.number_of_student < data2.number_of_students) {
           department.number_of_student += 1;
-          await department.save()
+          await department.save();
           await Model.UserDepartment.create({
             userId: req.tokenUserId,
             departmentId: req.departmentId,
@@ -314,8 +345,8 @@ console.log(department.number_of_student)
             const message = {
               data: {
                 body: "user Join",
-                    icon: "https://www.gatherin.me/files/2021-09-07T07:41:06.045Z-photo_2021-07-18_16-43-46.jpg",
-                title: "new notification"
+                icon: "https://www.gatherin.me/files/2021-09-07T07:41:06.045Z-photo_2021-07-18_16-43-46.jpg",
+                title: "new notification",
               },
               token: teacher.firebaseToken,
             };
@@ -335,7 +366,7 @@ console.log(department.number_of_student)
           await Model.Notification.create(data);
           res.status(200).json({ msg: "successfully" });
         } else {
-          res.send({ msg: "department is full,so you can't join to it" }, 400)
+          res.send({ msg: "department is full,so you can't join to it" }, 400);
         }
       } else {
         res.status(406).json({ msg: "user exist in department" });
@@ -352,7 +383,7 @@ console.log(department.number_of_student)
 exports.getUsersInDerpartment = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const page = +req.query.page || 1
+    const page = +req.query.page || 1;
     const data = await Model.Department.findOne({ where: { id } });
     if (data) {
       const users = [];
@@ -363,7 +394,11 @@ exports.getUsersInDerpartment = async (req, res, next) => {
         where: { departmentId: id },
         attributes: ["userId", "id"],
       });
-      const groups = await Model.Group.findAll({ raw: true, where: { departmentId: id }, attributes: ["id"] })
+      const groups = await Model.Group.findAll({
+        raw: true,
+        where: { departmentId: id },
+        attributes: ["id"],
+      });
       const userCount = await Model.UserDepartment.findAndCountAll({
         where: { departmentId: id },
       });
@@ -373,20 +408,22 @@ exports.getUsersInDerpartment = async (req, res, next) => {
           where: { id: index.userId },
           attributes: ["fullName", "picture", "email", "id"],
         });
-        let isJoin = false
+        let isJoin = false;
         for (let group of groups) {
-          const result = await Model.UserGroup.findOne({ where: { userId: handle.id, groupId: group.id } })
-          console.log(result)
+          const result = await Model.UserGroup.findOne({
+            where: { userId: handle.id, groupId: group.id },
+          });
+          console.log(result);
           if (result) {
-            isJoin = true
+            isJoin = true;
             break;
           }
         }
         users.push({ ...handle, isJoin });
       }
       res.status(200).json({
-        "member": users,
-        "members_count": userCount.count,
+        member: users,
+        members_count: userCount.count,
         currentPage: page,
         // hasNextPage: ITEMS_PER_PAGE * page < userCount.count,
         hasNextPage: false,
@@ -394,7 +431,6 @@ exports.getUsersInDerpartment = async (req, res, next) => {
         nextPage: ITEMS_PER_PAGE * page < userCount.count ? page + 1 : null,
         previousPage: page > 1 ? page - 1 : null,
         lastPage: Math.ceil(userCount.count / ITEMS_PER_PAGE),
-
       });
       // res.status(200).send(users);
     } else {
@@ -428,30 +464,34 @@ exports.removeUser = async (req, res, next) => {
           where: {
             userId: user,
             departmentId: handle.id,
-          }
+          },
         });
         if (data) {
-          const groups = await Model.Group.findAll({ where: { departmentId } })
+          const groups = await Model.Group.findAll({ where: { departmentId } });
           for (let group of groups) {
-            await Model.UserGroup.destroy({ where: { groupId: group.id, userId: user } })
+            await Model.UserGroup.destroy({
+              where: { groupId: group.id, userId: user },
+            });
           }
-          await data.destroy()
-          await Model.ConsumerPackage.findOne({ where: { userId: req.tokenUserId } }).then(cp => {
+          await data.destroy();
+          await Model.ConsumerPackage.findOne({
+            where: { userId: req.tokenUserId },
+          }).then((cp) => {
             cp.update({
-              current_number_of_student: cp.current_number_of_student - 1
-            })
-          })
-        }
-        else {
+              current_number_of_student: cp.current_number_of_student - 1,
+            });
+          });
+        } else {
           const err = new Error("user not exist in deparment");
           err.statusCode = 400;
           throw err;
-
         }
       }
       res.status(200).json({ msg: "successfully" });
     } else {
-      res.status(400).json({ msg: "department is not for you , or department not exist" });
+      res
+        .status(400)
+        .json({ msg: "department is not for you , or department not exist" });
     }
   } catch (err) {
     if (!err.statusCode) err.statusCode = 500;
@@ -460,64 +500,68 @@ exports.removeUser = async (req, res, next) => {
 };
 exports.filterUsers = async (req, res, next) => {
   try {
-    const { text, departmentId } = req.query
-    const page = +req.query.page || 1
+    const { text, departmentId } = req.query;
+    const page = +req.query.page || 1;
     if (departmentId) {
       const userCount = await Model.UserDepartment.findAndCountAll({
         where: { departmentId },
       });
-      const groups = await Model.Group.findAll({ raw: true, where: { departmentId: departmentId }, attributes: ["id"] })
+      const groups = await Model.Group.findAll({
+        raw: true,
+        where: { departmentId: departmentId },
+        attributes: ["id"],
+      });
 
       const result = await Model.UserDepartment.findAll({
         limit: ITEMS_PER_PAGE,
         offset: (page - 1) * ITEMS_PER_PAGE,
         where: {
-          departmentId
+          departmentId,
         },
         include: {
           model: Model.User,
           attributes: ["email", "id", "fullName", "picture", "phone"],
           where: {
             fullName: {
-              [Op.like]: `%${text ? text : ""}%`
-            }
-          }
-        }
-      })
-      const users = []
-      const handle = result.map(item => item.User.dataValues)
+              [Op.like]: `%${text ? text : ""}%`,
+            },
+          },
+        },
+      });
+      const users = [];
+      const handle = result.map((item) => item.User.dataValues);
       for (let user of handle) {
-        let isJoin = false
+        let isJoin = false;
         for (let group of groups) {
-          const result = await Model.UserGroup.findOne({ where: { userId: user.id, groupId: group.id } })
-          console.log(result)
+          const result = await Model.UserGroup.findOne({
+            where: { userId: user.id, groupId: group.id },
+          });
+          console.log(result);
           if (result) {
-            isJoin = true
+            isJoin = true;
             break;
           }
         }
-        users.push({ ...user, isJoin })
+        users.push({ ...user, isJoin });
       }
       res.json({
-        "member": users,
-        "members_count": userCount.count,
+        member: users,
+        members_count: userCount.count,
         currentPage: page,
         hasNextPage: ITEMS_PER_PAGE * page < userCount.count,
         hasPreviousPage: page > 1,
         nextPage: ITEMS_PER_PAGE * page < userCount.count ? page + 1 : null,
         previousPage: page > 1 ? page - 1 : null,
         lastPage: Math.ceil(userCount.count / ITEMS_PER_PAGE),
+      });
+    } else {
+      const err = new Error("departmentId is not exist");
+      err.statusCode = 400;
 
-      })
-    }
-    else {
-      const err = new Error("departmentId is not exist")
-      err.statusCode = 400
-
-      throw err
+      throw err;
     }
   } catch (err) {
     if (!err.statusCode) err.statusCode = 500;
     next(err);
   }
-}
+};

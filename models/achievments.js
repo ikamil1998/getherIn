@@ -20,8 +20,8 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
       });
-      this.hasMany(models.Image, {
-        foreignKey: "AchievementDepartment",
+      this.hasMany(models.AchievementDepartment, {
+        foreignKey: "achievmentId",
         constraints: true,
         onDelete: "CASCADE",
         onUpdate: "CASCADE",

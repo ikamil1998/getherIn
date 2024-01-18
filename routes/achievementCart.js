@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.post(
   "/",
-  isAuth,
+  // isAuth,
   asyncWrapper(
     uploadImages.fields([
       { name: "logoImages", maxCount: 5 },
@@ -24,11 +24,12 @@ router.post(
   ),
   asyncWrapper(achievmentsController.createAchievmentsCart)
 );
+router.get("/",asyncWrapper(achievmentsController.getCartData));           
 
-  isAuth,
-  router.get("/educationalStage",isAuth,asyncWrapper(achievmentsController.getCartData));           
-  router.get("/",isAuth,asyncWrapper(achievmentsController.getCartData));           
-  router.get("/",isAuth,asyncWrapper(achievmentsController.getCartData));           
-  router.get("/",isAuth,asyncWrapper(achievmentsController.getCartData));           
+  // isAuth,
+  // router.get("/educationalStage",asyncWrapper(achievmentsController.getCartData));           
+  // router.get("/",asyncWrapper(achievmentsController.getCartData));           
+  // router.get("/",asyncWrapper(achievmentsController.getCartData));           
+  // router.get("/",asyncWrapper(achievmentsController.getCartData));           
 
 module.exports = router;

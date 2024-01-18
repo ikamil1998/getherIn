@@ -37,9 +37,8 @@ exports.createAchievementPage2 = (achievment) => {
 exports.createAchievementPage3 = (achievment) => {
   const schema = Joi.object({
     introduction: Joi.string().trim().allow(""),
-    skills: Joi.string().trim().allow(""),
-    links: Joi.array().items(Joi.string().trim()),
-    externalReadings: Joi.array().items(Joi.string().trim()),
+    links: Joi.string().allow(),
+    externalReadings: Joi.string().allow(""),
     achievements: Joi.string().trim().allow(""),
     volunteerWork: Joi.string().trim().allow(""),
     certificates: Joi.string().trim().allow(""),

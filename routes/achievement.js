@@ -6,8 +6,8 @@ const achievmentsController = require("../controllers/achievements");
 const asyncWrapper = require("../utils/asyncWrapper");
 const router = express.Router();
 
-router.post();
-
-     
-
+router.get("/", asyncWrapper(achievmentsController.getAllAchievments));
+router.put("/view/:achievmentId", asyncWrapper(achievmentsController.updateView));
+router.get("/:achievmentId", asyncWrapper(achievmentsController.getOneAchievement));
+router.delete("/:achievmentId", asyncWrapper(achievmentsController.deleteAchievement));
 module.exports = router;

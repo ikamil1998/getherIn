@@ -35,7 +35,7 @@ const pageSelect = {
   ],
   4: ["id", "subject", "activities", "projects", "performingTasks", "comments"],
 };
-const selectAll = [
+const selectAll = ["submited",
   ...new Set(
     pageSelect["1"].concat(pageSelect["2"], pageSelect["3"], pageSelect["4"])
   ),
@@ -65,6 +65,7 @@ const validateCreateAchievMent = (body) => {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 const getImagesLocation = (req) => {
+
   let logoImages = req.files?.logoImages?.map((ele) => ele.path) || [];
   let achievementsImages =
     req.files?.achievementsImages?.map((ele) => ele.path) || [];
@@ -81,7 +82,6 @@ const getImagesLocation = (req) => {
   let projectsImages = req.files?.projectsImages?.map((ele) => ele.path) || [];
   let performingTasksImages =
     req.files?.performingTasksImages?.map((ele) => ele.path) || [];
-
   return {
     logoImages,
     achievementsImages,
@@ -98,17 +98,18 @@ const getImagesLocation = (req) => {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 exports.createAchievmentsCart = async (req, res) => {
   req.body.pageNumber = Number(req.body.pageNumber) || 0;
-  const id = req.tokenUserId
+  const id = 1;
   validateCreateAchievMent(req.body);
   const cart = await Model.AchievmentsCart.findOne({
     where: { userId: id, submited: false },
   });
   let newCart = cart
     ? await Model.AchievmentsCart.update(
-        { ...req.body, submited: req.body.pageNumber == 4 ? true : false },
+        { ...req.body, submited: req.body.pageNumber == 4 ? true : false},
         {
           where: {
             userId: id,
+            submited : false
           },
           returning: true,
         }
@@ -170,7 +171,8 @@ exports.createAchievmentsCart = async (req, res) => {
           competitionsImagesBulkInsert
         )
       );
-      break;
+      return res.status(200).json({ achievment: newCart });
+
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     case 4:
@@ -199,18 +201,23 @@ exports.createAchievmentsCart = async (req, res) => {
           performingTasksImagesBulkInsert
         )
       );
-      const achievment = await Model.Achievments.create(newCart);
+      const cartToAdd =await Model.AchievmentsCart.findOne({
+        where: { id : cart ? cart.id : newCart.id, },
+      })
+      const achievment = await Model.Achievments.create({...cartToAdd.dataValues});
       await Model.Image.update(
         { achievementId: achievment.id },
         { where: { achievementCartId: cart ? cart.id : newCart.id } }
       );
-      break;
+      return res.status(200).json({ achievment: newCart });
+    default:
+      return res.status(200).json({ achievment: newCart });
   }
 };
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 exports.getCartData = async (req, res) => {
-  const id = req.tokenUserId
+  const id = 1;
   const { pageNumber } = req.query;
   let mainCart = await Model.AchievmentsCart.findOne({
     where: { userId: id, submited: false },
@@ -226,29 +233,47 @@ exports.getCartData = async (req, res) => {
   const images = await Model.Image.findAll({
     where: { achievementCartId: mainCart.id },
   });
-  mainCart.dataValues.logoImages = images.filter((ele)=> ele.module == "logoImages")
-  mainCart.dataValues.achievementsImages = images.filter((ele)=> ele.module == "achievementsImages")
-  mainCart.dataValues.volunteerWorkImages = images.filter((ele)=> ele.module == "volunteerWorkImages")
-  mainCart.dataValues.certificatesImages = images.filter((ele)=> ele.module == "certificatesImages")
-  mainCart.dataValues.educationalCoursesImages = images.filter((ele)=> ele.module == "educationalCoursesImages")
-  mainCart.dataValues.competitionsImages = images.filter((ele)=> ele.module == "competitionsImages")
-  mainCart.dataValues.activitiesImages = images.filter((ele)=> ele.module == "activitiesImages")
-  mainCart.dataValues.projectsImages = images.filter((ele)=> ele.module == "projectsImages")
-  mainCart.dataValues.performingTasksImages = images.filter((ele)=> ele.module == "performingTasksImages")
+  mainCart.dataValues.logoImages = images.filter(
+    (ele) => ele.module == "logoImages"
+  );
+  mainCart.dataValues.achievementsImages = images.filter(
+    (ele) => ele.module == "achievementsImages"
+  );
+  mainCart.dataValues.volunteerWorkImages = images.filter(
+    (ele) => ele.module == "volunteerWorkImages"
+  );
+  mainCart.dataValues.certificatesImages = images.filter(
+    (ele) => ele.module == "certificatesImages"
+  );
+  mainCart.dataValues.educationalCoursesImages = images.filter(
+    (ele) => ele.module == "educationalCoursesImages"
+  );
+  mainCart.dataValues.competitionsImages = images.filter(
+    (ele) => ele.module == "competitionsImages"
+  );
+  mainCart.dataValues.activitiesImages = images.filter(
+    (ele) => ele.module == "activitiesImages"
+  );
+  mainCart.dataValues.projectsImages = images.filter(
+    (ele) => ele.module == "projectsImages"
+  );
+  mainCart.dataValues.performingTasksImages = images.filter(
+    (ele) => ele.module == "performingTasksImages"
+  );
   return res.status(200).json({ data: mainCart });
 };
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-exports.getEducationalStages = async (req, res)=>{
-  return res.status(200).json({data : educationalStages})
-}
-exports.getSemesters = async (req, res)=>{
-  return res.status(200).json({data : semesters})
-}
-exports.getGrades = async (req, res)=>{
-  const stage = req.query.stage || "none"
-  const existingStage = educationalStages[`${stage}`]
-  if(!existingStage)return res.status(400).json({message :  "Stage not found"})
-  return res.status(200).json({data : existingStage})
-}
-
+exports.getEducationalStages = async (req, res) => {
+  return res.status(200).json({ data: educationalStages });
+};
+exports.getSemesters = async (req, res) => {
+  return res.status(200).json({ data: semesters });
+};
+exports.getGrades = async (req, res) => {
+  const stage = req.query.stage || "none";
+  const existingStage = educationalStages[`${stage}`];
+  if (!existingStage)
+    return res.status(400).json({ message: "Stage not found" });
+  return res.status(200).json({ data: existingStage });
+};
