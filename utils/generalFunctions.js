@@ -5,7 +5,7 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     console.log(file.originalname);
-      cb(null, `${Math.random(1000000000000)}-${file.originalname}`);
+      cb(null, new Date().toISOString() + "-" + file.originalname);
   },
 });
 const fileFilter = (req, file, cb) => {
