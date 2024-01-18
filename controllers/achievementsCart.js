@@ -98,10 +98,10 @@ const getImagesLocation = (req) => {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 exports.createAchievmentsCart = async (req, res) => {
   req.body.pageNumber = Number(req.body.pageNumber) || 0;
-  const id = 1;
+  const id = req.tokenUserId;
   validateCreateAchievMent(req.body);
   const cart = await Model.AchievmentsCart.findOne({
-    where: { userId: id, submited: false },
+    where: { userId : id, submited: false },
   });
   let newCart = cart
     ? await Model.AchievmentsCart.update(
@@ -217,7 +217,7 @@ exports.createAchievmentsCart = async (req, res) => {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 exports.getCartData = async (req, res) => {
-  const id = 1;
+  const id =  req.tokenUserId;;
   const { pageNumber } = req.query;
   let mainCart = await Model.AchievmentsCart.findOne({
     where: { userId: id, submited: false },
