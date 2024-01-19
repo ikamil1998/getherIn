@@ -146,7 +146,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "Achievments",
-      tableName: "achievments",
+      tableName: "Achievments",
       charset: "utf8",
       collate: "utf8_unicode_ci",
     }

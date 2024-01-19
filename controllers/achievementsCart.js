@@ -205,6 +205,7 @@ exports.createAchievmentsCart = async (req, res) => {
       const cartToAdd =await Model.AchievmentsCart.findOne({
         where: { id : cart ? cart.id : newCart.id, },
       })
+      delete cartToAdd.dataValues.userId
       const achievment = await Model.Achievments.create({...cartToAdd.dataValues});
       await Model.Image.update(
         { achievementId: achievment.id },
