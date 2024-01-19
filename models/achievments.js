@@ -16,9 +16,9 @@ module.exports = (sequelize, DataTypes) => {
       });
       this.hasMany(models.Image, {
         foreignKey: "achievementId",
-        // constraints: true,
-        // onDelete: "CASCADE",
-        // onUpdate: "CASCADE",
+        constraints: true,
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       });
       this.hasMany(models.AchievementDepartment, {
         foreignKey: "achievmentId",
@@ -146,7 +146,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "Achievments",
-      tableName: "Achievments",
+      tableName: "achievments",
       charset: "utf8",
       collate: "utf8_unicode_ci",
     }
