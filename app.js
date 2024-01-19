@@ -25,6 +25,7 @@ const ChatComplaintRoutes = require("./routes/chatComplaint");
 const IAPRoutes = require("./routes/IAP");
 const achievementCartRoutes = require("./routes/achievementCart.js");
 const achievementsRoutes = require("./routes/achievement.js");
+const imagesRoutes = require("./routes/image.js");
 const { changeValidForConsumerPackage } = require("./utils");
 
 const app = express();
@@ -88,6 +89,7 @@ app.use("/chatComplaint", ChatComplaintRoutes);
 app.use("/iap", IAPRoutes);
 app.use("/achievments_cart", achievementCartRoutes);
 app.use("/achievments", achievementsRoutes);
+app.use("/image", imagesRoutes);
 app.use("/", rootRoutes);
 
 require("./socket/groupChat.js")(io);

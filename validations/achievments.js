@@ -4,6 +4,7 @@ exports.createAchievementPage1 = (achievment) => {
     schoolName: Joi.string().trim().required(),
     city: Joi.string().trim().required(),
     fullName: Joi.string().trim().required(),
+    email: Joi.string().email().required(),
     age: Joi.string().trim().required(),
     stage: Joi.string().trim().required(),
     academicYear: Joi.string().trim().required(),
@@ -60,6 +61,80 @@ exports.createAchievementPage4 = (achievment) => {
     activities: Joi.string().trim().required(),
     projects: Joi.string().trim().required(),
     performingTasks: Joi.string().trim().required(),
+    comments: Joi.string().trim().allow(""),
+    pageNumber: Joi.number().required().valid(4),
+  });
+  const { error } = schema.validate(achievment);
+  if (error) {
+    const validationError = new Error(error.details[0].message);
+    validationError.statusCode = 400;
+    throw error;
+  }
+  return;
+};
+
+exports.updateAchievementPage1 = (achievment) => {
+  const schema = Joi.object({
+    schoolName: Joi.string().trim(),
+    city: Joi.string().trim(),
+    fullName: Joi.string().trim(),
+    email: Joi.string().email(),
+    age: Joi.string().trim(),
+    stage: Joi.string().trim(),
+    academicYear: Joi.string().trim(),
+    semister: Joi.string().trim(),
+    grade: Joi.string().trim(),
+    pageNumber: Joi.number().required().valid(1),
+  });
+  const { error } = schema.validate(achievment);
+  if (error) {
+    const validationError = new Error(error.details[0].message);
+    validationError.statusCode = 400;
+    throw error;
+  }
+  return;
+};
+exports.updateAchievementPage2 = (achievment) => {
+  const schema = Joi.object({
+    hoopies: Joi.string().trim(),
+    skills: Joi.string().trim(),
+    targets: Joi.string().trim(),
+    pageNumber: Joi.number().required().valid(2),
+  });
+  const { error } = schema.validate(achievment);
+  if (error) {
+    const validationError = new Error(error.details[0].message);
+    validationError.statusCode = 400;
+    throw error;
+  }
+  return;
+};
+exports.updateAchievementPage3 = (achievment) => {
+  const schema = Joi.object({
+    introduction: Joi.string().trim().allow(""),
+    links: Joi.string().allow(),
+    externalReadings: Joi.string().allow(""),
+    achievements: Joi.string().trim().allow(""),
+    volunteerWork: Joi.string().trim().allow(""),
+    certificates: Joi.string().trim().allow(""),
+    educationalCourses: Joi.string().trim().allow(""),
+    competitions: Joi.string().trim().allow(""),
+    pageNumber: Joi.number().required().valid(3),
+  });
+  const { error } = schema.validate(achievment);
+  if (error) {
+    const validationError = new Error(error.details[0].message);
+    validationError.statusCode = 400;
+    throw error;
+  }
+  return;
+};
+exports.updateAchievementPage4 = (achievment) => {
+  const schema = Joi.object({
+    subject: Joi.string().trim(),
+    activities: Joi.string().trim(),
+    projects: Joi.string().trim(),
+    performingTasks: Joi.string().trim(),
     comments: Joi.string().trim().allow(""),
     pageNumber: Joi.number().required().valid(4),
   });

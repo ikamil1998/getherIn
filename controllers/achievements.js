@@ -1,6 +1,13 @@
 const Model = require("../models");
+const fs = require("fs")
 const { handlePaginationSort } = require("../utils/pagination");
-const { updateViewSetting } = require("../validations/achievments");
+const {
+  updateViewSetting,
+  updateAchievementPage1,
+  updateAchievementPage2,
+  updateAchievementPage3,
+  updateAchievementPage4,
+} = require("../validations/achievments");
 const pageSelect = {
   1: [
     "id",
@@ -28,11 +35,37 @@ const pageSelect = {
   ],
   4: ["id", "subject", "activities", "projects", "performingTasks", "comments"],
 };
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 const selectAll = [
   ...new Set(
     pageSelect["1"].concat(pageSelect["2"], pageSelect["3"], pageSelect["4"])
   ),
 ];
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+const validateUpdateAchievMent = (body) => {
+  switch (body.pageNumber) {
+    case 1:
+      updateAchievementPage1(body);
+      break;
+    case 2:
+      updateAchievementPage2(body);
+      break;
+    case 3:
+      updateAchievementPage3(body);
+      break;
+    case 4:
+      updateAchievementPage4(body);
+      break;
+    default:
+      const error = new Error("Invalid page number");
+      error.statusCode = 400;
+      throw error;
+  }
+};
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 exports.updateView = async (req, res) => {
   const userId = req.tokenUserId;
   const { achievmentId } = req.params;
@@ -66,6 +99,8 @@ exports.updateView = async (req, res) => {
   );
   return res.status(200).json({ message: "Updated successfully" });
 };
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 exports.getAllAchievments = async (req, res) => {
   const userId = req.tokenUserId;
   const { limit, offset } = handlePaginationSort(req.query);
@@ -79,6 +114,8 @@ exports.getAllAchievments = async (req, res) => {
   });
   return res.status(200).json({ data: achievments, count: totalItems });
 };
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 exports.getOneAchievement = async (req, res) => {
   const userId = req.tokenUserId;
   const { achievmentId } = req.params;
@@ -125,6 +162,8 @@ exports.getOneAchievement = async (req, res) => {
   );
   return res.status(200).json({ data: achievement });
 };
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 exports.deleteAchievement = async (req, res) => {
   const userId = req.tokenUserId;
   const { achievmentId } = req.params;
@@ -137,6 +176,8 @@ exports.deleteAchievement = async (req, res) => {
   await Model.Achievments.destroy({ where: { userId, id: achievmentId } });
   return res.status(203).json({ message: "Deleted Successfullt" });
 };
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 exports.getMyDepartment = async (req, res) => {
   const userId = req.tokenUserId;
   const { limit, offset } = handlePaginationSort(req.query);
@@ -160,4 +201,160 @@ exports.getMyDepartment = async (req, res) => {
     dep.dataValues.added = addedValue ? true : false;
   }
   return res.status(200).json({ data: departments, count });
+};
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+exports.deleteImage = async (req, res) => {
+  const { id } = req.params;
+  const image = await Model.Image.findOne({
+    where: { id },
+  });
+  if (!image) return res.status(404).json({ message: "Image not found" });
+  await Model.Image.destroy({
+    where: { id },
+  });
+  const imagePath = `../images/${image.path}`
+  fs.unlink(imagePath, (err) => {
+    if (err) {
+      console.error(err);
+    }
+  });
+  return res.status(200).json({ message: "Image deleted successfully" });
+};
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+exports.getLastAchievmentMainData = async (req, res) => {
+  const userId = req.tokenUserId;
+  let achievement = await Model.Achievments.findOne({ where: { userId } });
+  if (!achievement)
+    return res
+      .status(404)
+      .json({ message: "You don't have previous achievments" });
+  const images = await Model.Image.findAll({
+    where: { achievementId: achievement.id, module: "logoImages" },
+  });
+  achievement.dataValues.logoImages = images;
+  return res.status(200).json({ data: achievement });
+};
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+exports.uploadPdf = async (req, res) => {
+  const userId = req.tokenUserId;
+
+  if (!req.file) return res.status(400).json({ message: "Pdf is required" });
+  const { achievmentId } = req.params;
+  let achievement = await Model.Achievments.findOne({
+    where: { id: achievmentId, userId },
+  });
+  if (!achievement)
+    return res.status(404).json({ message: "Achievment not found" });
+  await Model.Achievments.update(
+    { pdf: req.file.path },
+    { where: { id: achievmentId } }
+  );
+  return res.status(200).json({ message: "Updated successfully" });
+};
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+exports.updateAchievment = async (req, res) => {
+  req.body.pageNumber = Number(req.body.pageNumber) || 0;
+  const { achievementId } = req.params;
+  const userId = req.tokenUserId;
+  validateUpdateAchievMent(req.body);
+  let achievement = await Model.Achievments.findOne({
+    where: { id: achievementId, userId },
+  });
+  if (!achievement)
+    return res.status(404).json({ message: "Achievment not found" });
+  switch (req.body.pageNumber) {
+    case 1:
+      const { logoImages } = getImagesLocation(req);
+
+      const logoBulkInsert = logoImages.map((path) => ({
+        path,
+        module: "logoImages",
+        achievementId,
+      }));
+      await Model.Image.bulkCreate(logoBulkInsert);
+      return res.status(200).json({ achievment: newCart });
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    case 3:
+      const {
+        achievementsImages,
+        volunteerWorkImages,
+        certificatesImages,
+        educationalCoursesImages,
+        competitionsImages,
+      } = getImagesLocation(req);
+      const achievementsImagesBulkInsert = achievementsImages.map((path) => ({
+        path,
+        module: "achievementsImages",
+        achievementId,
+      }));
+      const volunteerWorkImagesBulkInsert = volunteerWorkImages.map((path) => ({
+        path,
+        module: "volunteerWorkImages",
+        achievementId,
+      }));
+      const certificatesImagesBulkInsert = certificatesImages.map((path) => ({
+        path,
+        module: "certificatesImages",
+        achievementCartId: cart ? cart.id : newCart.id,
+      }));
+      const educationalCoursesImagesBulkInsert = educationalCoursesImages.map(
+        (path) => ({
+          path,
+          module: "educationalCoursesImages",
+          achievementId,
+        })
+      );
+      const competitionsImagesBulkInsert = competitionsImages.map((path) => ({
+        path,
+        module: "competitionsImages",
+        achievementId,
+      }));
+      await Model.Image.bulkCreate(
+        achievementsImagesBulkInsert.concat(
+          volunteerWorkImagesBulkInsert,
+          certificatesImagesBulkInsert,
+          educationalCoursesImagesBulkInsert,
+          competitionsImagesBulkInsert
+        )
+      );
+      return res.status(200).json({ achievment });
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    case 4:
+      const { activitiesImages, projectsImages, performingTasksImages } =
+        getImagesLocation(req);
+      const activitiesImagesBulkInsert = activitiesImages.map((path) => ({
+        path,
+        module: "activitiesImages",
+        achievementId,
+      }));
+      const projectsImagesBulkInsert = projectsImages.map((path) => ({
+        path,
+        module: "projectsImages",
+        achievementId,
+      }));
+      const performingTasksImagesBulkInsert = performingTasksImages.map(
+        (path) => ({
+          path,
+          module: "performingTasksImages",
+          achievementId,
+        })
+      );
+      await Model.Image.bulkCreate(
+        activitiesImagesBulkInsert.concat(
+          projectsImagesBulkInsert,
+          performingTasksImagesBulkInsert
+        )
+      );
+
+      return res.status(200).json({ achievement });
+  }
 };
