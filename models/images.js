@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "Image",
-      tableName: "Images",
+      tableName: "images",
       charset: "utf8",
       collate: "utf8_unicode_ci",
     }
