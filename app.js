@@ -102,7 +102,7 @@ app.get("/test",(req,res)=>{
 
 app.use((error, req, res, next) => {
   const status = error.statusCode || 500;
-  console.log(error.message);
+  console.log(error);
   const message = error.message;
   const data = error.data;
   res.status(status).json({ message: message, data: data });
