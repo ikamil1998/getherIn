@@ -19,6 +19,7 @@ const pageSelect = {
     "academicYear",
     "semister",
     "grade",
+    "email"
   ],
   2: ["hoopies", "skills", "targets", "id"],
   3: [
