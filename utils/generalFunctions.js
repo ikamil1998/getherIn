@@ -5,7 +5,7 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     console.log(file.originalname);
-      cb(null, new Date().toISOString() + "-" + file.originalname);
+      cb(null,  "-" + file.originalname);
   },
 });
 const pdfStorage = multer.diskStorage({

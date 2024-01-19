@@ -209,7 +209,7 @@ exports.createAchievmentsCart = async (req, res) => {
 
       const achievment = await Model.Achievments.create({...cartToAdd.dataValues });
       await Model.Image.update(
-        { achievementId: achievment.id },
+        { achievementId: achievment.dataValues.id },
         { where: { achievementCartId: cart ? cart.id : newCart.id } }
       );
       return res.status(200).json({ achievment: newCart });
