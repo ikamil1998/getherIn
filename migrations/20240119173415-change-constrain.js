@@ -2,11 +2,11 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    // Remove the existing foreign key constraint
-    await queryInterface.removeConstraint('Images', 'images_ibfk_1');
+    // Remove the existing foreign key constraint images_ibfk_1
+    await queryInterface.removeConstraint('images', 'images_ibfk_1');
 
     // Add a new foreign key constraint referencing the 'Achievements' table
-    await queryInterface.addConstraint('Images', {
+    await queryInterface.addConstraint('images', {
       fields: ['achievementId'],
       type: 'foreign key',
       name: 'images_ibfk_2', // Choose a new name for the foreign key constraint
