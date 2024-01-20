@@ -1,7 +1,13 @@
 "use strict";
 const { Op } = require("sequelize");
 
-const { Department, User, Group, ConsumerPackage, Achievements } = require("../models");
+const {
+  Department,
+  User,
+  Group,
+  ConsumerPackage,
+  Achievements,
+} = require("../models");
 const Model = require("../models");
 const {
   checkValidate,
@@ -51,8 +57,19 @@ exports.get = async (req, res, next) => {
             members_count: users_group.count,
           });
         }
-        
-      
+        const achieve = await Model.AchievementDepartment.findOne({
+          where: { departmentId: id },
+          include: {
+            model: Model.Achievements,
+            where  : {
+              userId ,
+              view : {
+                [Op.in]: [2, 3]
+              }
+            }
+          },
+        });
+
         res.status(200).json({
           id: department.dataValues.id,
           name: department.dataValues.name,
@@ -60,6 +77,8 @@ exports.get = async (req, res, next) => {
           url: department.dataValues.url,
           members_count: users.count,
           Groups: data,
+          shared : achieve ? true : false,
+          achievmentId : achieve ? achieve.achievmentId : null
         });
       } else {
         const err = new Error(
