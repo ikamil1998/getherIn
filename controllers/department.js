@@ -60,7 +60,7 @@ exports.get = async (req, res, next) => {
         const achieve = await Model.AchievementDepartment.findOne({
           where: { departmentId: id },
           include: {
-            model: Model.Achievements,
+            model: Achievements,
             where  : {
               userId ,
               view : {
