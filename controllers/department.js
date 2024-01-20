@@ -22,6 +22,7 @@ const ITEMS_PER_PAGE = 10;
 
 exports.get = async (req, res, next) => {
   try {
+    
     const userId = req.tokenUserId;
     checkValidate(req);
     const { id } = req.params;
@@ -62,15 +63,15 @@ exports.get = async (req, res, next) => {
           attributes: ["departmentId", "achievmentId"],
           include: [
             {
-              model: Model.Achievements,
-              attributes : ["view", "userId", "pdf"],
+              model: Model.Achievments,
+              attributes: ["view", "userId", "pdf"],
               where: {
                 userId,
                 view: {
                   [Op.in]: [2, 3],
                 },
               },
-            }
+            },
           ],
         });
 
