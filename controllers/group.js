@@ -118,10 +118,10 @@ exports.get = async (req, res, next) => {
               },
             },
           });
-          console.log(achievmentDep.dataValues?.Achievements?.dataValues?.pdf);
-          console.log(achievmentDep.dataValues?.Achievements?.dataValues);
-          console.log(achievmentDep.dataValues?.Achievements);
-          console.log(achievmentDep.dataValues);
+          console.log(achievmentDep?.dataValues?.Achievements?.dataValues?.pdf);
+          console.log(achievmentDep?.dataValues?.Achievements?.dataValues);
+          console.log(achievmentDep?.dataValues?.Achievements);
+          console.log(achievmentDep?.dataValues);
           console.log(achievmentDep);
           handel.hasPdf = achievmentDep ? true : false;
           handel.pdfLink = achievmentDep
