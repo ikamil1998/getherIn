@@ -59,17 +59,19 @@ exports.get = async (req, res, next) => {
         }
         const achieve = await Model.AchievementDepartment.findOne({
           where: { departmentId: id },
-          // include: [
-          //   {
-          //     model: Model.Achievements,
-          //     where: {
-          //       userId,
-          //       view: {
-          //         [Op.in]: [2, 3],
-          //       },
-          //     },
-          //   },
-          // ],
+          attributes: ["departmentId", "achievmentId"],
+          include: [
+            {
+              model: Model.Achievements,
+              attributes : ["view", "userId", "pdf"],
+              where: {
+                userId,
+                view: {
+                  [Op.in]: [2, 3],
+                },
+              },
+            }
+          ],
         });
 
         res.status(200).json({
