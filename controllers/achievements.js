@@ -375,7 +375,6 @@ exports.updateAchievment = async (req, res) => {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 exports.getOneAchievementFromLink = async (req, res) => {
   const { achievmentId } = req.params;
-  const { pageNumber } = req.query;
   const achievement = await Model.Achievments.findOne({
     where: {
       id: achievmentId,
@@ -383,9 +382,7 @@ exports.getOneAchievementFromLink = async (req, res) => {
         [Op.in]: [1, 3],
       },
     },
-    attributes: pageSelect[`${pageNumber}`]
-      ? pageSelect[`${pageNumber}`]
-      : selectAll,
+    attributes: ["id","pdf"]
   });
   if (!achievement) {
     return res.status(404).json({ message: "Achievment not found" });
