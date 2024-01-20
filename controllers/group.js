@@ -119,10 +119,10 @@ exports.get = async (req, res, next) => {
             },
           });
           
-          console.log(achievmentDep.Achievments);
+          console.log(achievmentDep);
           handel.hasPdf = achievmentDep ? true : false;
           handel.pdfLink = achievmentDep
-            ? achievmentDep.Achievments?.dataValues?.pdf
+            ? achievmentDep?.Achievments?.dataValues?.pdf
             : null;
           Users.push(handel);
         }
