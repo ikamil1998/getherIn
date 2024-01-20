@@ -8,6 +8,7 @@ const {
   updateAchievementPage3,
   updateAchievementPage4,
 } = require("../validations/achievments");
+const { Op } = require("sequelize");
 const pageSelect = {
   1: [
     "id",
