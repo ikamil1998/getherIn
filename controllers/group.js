@@ -108,7 +108,7 @@ exports.get = async (req, res, next) => {
           const achievmentDep = await Model.AchievementDepartment.findOne({
             where: { departmentId: department.id },
             include: {
-              model: Achievements,
+              model: Model.Achievments,
               where: {
                 userId: handel.id,
                 view: {
@@ -117,8 +117,10 @@ exports.get = async (req, res, next) => {
               },
             },
           });
-          handel.hasPdf =  achievmentDep ? true : false
-          handel.pdfLink = achievmentDep ? achievmentDep.Achievements?.pdf : null
+          handel.hasPdf = achievmentDep ? true : false;
+          handel.pdfLink = achievmentDep
+            ? achievmentDep.Achievements?.pdf
+            : null;
           Users.push(handel);
         }
         const isJoin = await users.filter((i) => {
