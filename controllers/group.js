@@ -105,6 +105,8 @@ exports.get = async (req, res, next) => {
             },
             attributes: ["fullName", "email", "picture", "id"],
           });
+          console.log("departmentId", department.id);
+          console.log("userId", handel.id);
           const achievmentDep = await Model.AchievementDepartment.findOne({
             where: { departmentId: department.id },
             include: {
