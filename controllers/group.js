@@ -110,7 +110,6 @@ exports.get = async (req, res, next) => {
             where: { departmentId: department.id },
             include: {
               model: Model.Achievments,
-              attributes:["pdf", "view", "userId"],
               where: {
                 userId: handel.id,
                 view: {
@@ -123,7 +122,7 @@ exports.get = async (req, res, next) => {
           console.log(achievmentDep);
           handel.hasPdf = achievmentDep ? true : false;
           handel.pdfLink = achievmentDep
-            ? achievmentDep?.dataValues?.Achievments?.dataValues?.pdf
+            ? achievmentDep.Achievments.pdf
             : null;
           Users.push(handel);
         }
