@@ -33,6 +33,11 @@ router.get(
   isAuth,
   asyncWrapper(achievmentsController.getOneAchievement)
 );
+router.get(
+  "/link/:achievmentId",
+  isAuth,
+  asyncWrapper(achievmentsController.getOneAchievementFromLink)
+);
 router.delete(
   "/:achievmentId",
   isAuth,

@@ -1,5 +1,5 @@
 const Model = require("../models");
-const fs = require("fs")
+const fs = require("fs");
 const { handlePaginationSort } = require("../utils/pagination");
 const {
   updateViewSetting,
@@ -33,7 +33,15 @@ const pageSelect = {
     "educationalCourses",
     "competitions",
   ],
-  4: ["id", "subject", "activities", "projects", "performingTasks", "comments", "pdf"],
+  4: [
+    "id",
+    "subject",
+    "activities",
+    "projects",
+    "performingTasks",
+    "comments",
+    "pdf",
+  ],
 };
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -81,7 +89,7 @@ exports.updateView = async (req, res) => {
   if (departmentId) {
     const exist = await Model.AchievementDepartment.findOne({
       where: { achievmentId },
-      attributes : ["achievmentId"]
+      attributes: ["achievmentId"],
     });
     if (exist) {
       return res
@@ -214,7 +222,7 @@ exports.deleteImage = async (req, res) => {
   await Model.Image.destroy({
     where: { id },
   });
-  const imagePath = `../images/${image.path}`
+  const imagePath = `../images/${image.path}`;
   fs.unlink(imagePath, (err) => {
     if (err) {
       console.error(err);
@@ -226,7 +234,10 @@ exports.deleteImage = async (req, res) => {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 exports.getLastAchievmentMainData = async (req, res) => {
   const userId = req.tokenUserId;
-  let achievement = await Model.Achievments.findOne({order: [['createdAt', 'DESC']], where: { userId } });
+  let achievement = await Model.Achievments.findOne({
+    order: [["createdAt", "DESC"]],
+    where: { userId },
+  });
   if (!achievement)
     return res
       .status(404)
@@ -359,4 +370,56 @@ exports.updateAchievment = async (req, res) => {
 
       return res.status(200).json({ achievement });
   }
+};
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+exports.getOneAchievementFromLink = async (req, res) => {
+  const { achievmentId } = req.params;
+  const { pageNumber } = req.query;
+  const achievement = await Model.Achievments.findOne({
+    where: {
+      id: achievmentId,
+      view: {
+        [Op.in]: [1, 3],
+      },
+    },
+    attributes: pageSelect[`${pageNumber}`]
+      ? pageSelect[`${pageNumber}`]
+      : selectAll,
+  });
+  if (!achievement) {
+    return res.status(404).json({ message: "Achievment not found" });
+  }
+
+  const images = await Model.Image.findAll({
+    where: { achievementId: achievmentId },
+  });
+  achievement.dataValues.logoImages = images.filter(
+    (ele) => ele.module == "logoImages"
+  );
+  achievement.dataValues.achievementsImages = images.filter(
+    (ele) => ele.module == "achievementsImages"
+  );
+  achievement.dataValues.volunteerWorkImages = images.filter(
+    (ele) => ele.module == "volunteerWorkImages"
+  );
+  achievement.dataValues.certificatesImages = images.filter(
+    (ele) => ele.module == "certificatesImages"
+  );
+  achievement.dataValues.educationalCoursesImages = images.filter(
+    (ele) => ele.module == "educationalCoursesImages"
+  );
+  achievement.dataValues.competitionsImages = images.filter(
+    (ele) => ele.module == "competitionsImages"
+  );
+  achievement.dataValues.activitiesImages = images.filter(
+    (ele) => ele.module == "activitiesImages"
+  );
+  achievement.dataValues.projectsImages = images.filter(
+    (ele) => ele.module == "projectsImages"
+  );
+  achievement.dataValues.performingTasksImages = images.filter(
+    (ele) => ele.module == "performingTasksImages"
+  );
+  return res.status(200).json({ data: achievement });
 };
