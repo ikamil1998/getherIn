@@ -1,14 +1,14 @@
 "use strict";
 
 const { Op } = require("sequelize");
-const { Department, Group, Package } = require("../models");
+const { Department, Group, Package, Achievements } = require("../models");
 const Model = require("../models");
 const {
   checkValidate,
   checkTeacherAccunt,
   isAccessProcess,
 } = require("../utils");
-const { admin } = require('../utils/firebase-config')
+const { admin } = require("../utils/firebase-config");
 
 // * done
 const ITEMS_PER_PAGE = 10;
@@ -71,7 +71,7 @@ exports.getByDepartmentId = async (req, res, next) => {
 exports.get = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const page = +req.query.page || 1
+    const page = +req.query.page || 1;
 
     const group = await Group.findOne({
       raw: true,
@@ -105,6 +105,20 @@ exports.get = async (req, res, next) => {
             },
             attributes: ["fullName", "email", "picture", "id"],
           });
+          const achievmentDep = await Model.AchievementDepartment.findOne({
+            where: { departmentId: department.id },
+            include: {
+              model: Achievements,
+              where: {
+                userId: handel.id,
+                view: {
+                  [Op.in]: [2, 3],
+                },
+              },
+            },
+          });
+          handel.hasPdf =  achievmentDep ? true : false
+          handel.pdfLink = achievmentDep ? achievmentDep.Achievements?.pdf : null
           Users.push(handel);
         }
         const isJoin = await users.filter((i) => {
@@ -133,7 +147,6 @@ exports.get = async (req, res, next) => {
           nextPage: ITEMS_PER_PAGE * page < userCount ? page + 1 : null,
           previousPage: page > 1 ? page - 1 : null,
           lastPage: Math.ceil(userCount / ITEMS_PER_PAGE),
-
         });
       } else {
         const err = new Error(`your service is not valid now`);
@@ -196,11 +209,13 @@ exports.create = async (req, res, next) => {
               where: {
                 userId: req.tokenUserId,
               },
-              include: [
-                { model: Model.Package },
-              ],
+              include: [{ model: Model.Package }],
             });
-            if ((data1.Package.number_of_students / data1.Package.number_of_group) + 1 < users.length) {
+            if (
+              data1.Package.number_of_students / data1.Package.number_of_group +
+                1 <
+              users.length
+            ) {
               const err = new Error(
                 `you can add users less or equel then ${data1.Package.number_of_students} `
               );
@@ -209,9 +224,7 @@ exports.create = async (req, res, next) => {
             }
             // if()
             if (users.indexOf(req.tokenUserId) <= -1) {
-              const err = new Error(
-                `teacher id is not include in users`
-              );
+              const err = new Error(`teacher id is not include in users`);
               err.statusCode = 400;
               throw err;
             }
@@ -229,7 +242,11 @@ exports.create = async (req, res, next) => {
               }
             }
           }
-          const group = await Model.Group.create({ name, departmentId, master: req.tokenUserId });
+          const group = await Model.Group.create({
+            name,
+            departmentId,
+            master: req.tokenUserId,
+          });
           if (users) {
             for (let userId of users) {
               const user = await Model.User.findOne({
@@ -242,11 +259,11 @@ exports.create = async (req, res, next) => {
                   data: {
                     body: `you joined in ${name}`,
                     icon: "https://www.gatherin.me/files/2021-09-07T07:41:06.045Z-photo_2021-07-18_16-43-46.jpg",
-                    title: "new notification"
+                    title: "new notification",
                   },
                   token: user.firebaseToken,
                 };
-           // await   admin.messaging().send(message);
+                // await   admin.messaging().send(message);
               }
               const data = {
                 title_en: `join to group`,
@@ -266,7 +283,6 @@ exports.create = async (req, res, next) => {
             { where: { userId: req.tokenUserId, id: department.id } }
           );
           res.status(201).json({ ...group.dataValues });
-
         } else {
           const err = new Error("your package has been used");
           err.statusCode = 403;
@@ -301,9 +317,13 @@ exports.update = async (req, res, next) => {
         });
         if (isValidEdit) {
           if (name) {
-            const isSame = await Model.Group.findOne({ where: { name, id: groupId } })
+            const isSame = await Model.Group.findOne({
+              where: { name, id: groupId },
+            });
             if (!isSame) {
-              const isValidName = await Model.Group.findOne({ where: { name, departmentId: group.departmentId } });
+              const isValidName = await Model.Group.findOne({
+                where: { name, departmentId: group.departmentId },
+              });
               if (!isValidName) {
                 group.name = name;
               } else {
@@ -318,11 +338,13 @@ exports.update = async (req, res, next) => {
               where: {
                 userId: req.tokenUserId,
               },
-              include: [
-                { model: Model.Package },
-              ],
+              include: [{ model: Model.Package }],
             });
-            if ((data1.Package.number_of_students / data1.Package.number_of_group) + 1 < users.length) {
+            if (
+              data1.Package.number_of_students / data1.Package.number_of_group +
+                1 <
+              users.length
+            ) {
               const err = new Error(
                 `you can add number of users less or equel then ${data1.Package.number_of_students} `
               );
@@ -336,12 +358,17 @@ exports.update = async (req, res, next) => {
             });
             // delete users
             for (let i of usersExist) {
-              if (users.indexOf(i.userId) <= -1 && i.userId != req.tokenUserId) {
+              if (
+                users.indexOf(i.userId) <= -1 &&
+                i.userId != req.tokenUserId
+              ) {
                 const handle = await Model.UserGroup.findOne({
                   where: { groupId, userId: i.userId },
                 });
                 await handle.destroy();
-                await Model.OptionGroup.destroy({ where: { groupId, userId: i.userId } })
+                await Model.OptionGroup.destroy({
+                  where: { groupId, userId: i.userId },
+                });
               }
             }
             // add users
@@ -356,17 +383,17 @@ exports.update = async (req, res, next) => {
                   where: { id: userId },
                   attributes: ["firebaseToken"],
                 });
-//console.log(user)
+                //console.log(user)
                 if (user.firebaseToken) {
                   const message = {
                     data: {
                       body: `you joined in ${name}`,
                       icon: "https://www.gatherin.me/files/2021-09-07T07:41:06.045Z-photo_2021-07-18_16-43-46.jpg",
-                      title: "new notification"
+                      title: "new notification",
                     },
                     token: user.firebaseToken,
                   };
-          //       await admin.messaging().send(message);
+                  //       await admin.messaging().send(message);
                 }
                 const data = {
                   title_en: `join to group`,
@@ -375,18 +402,22 @@ exports.update = async (req, res, next) => {
                   body_ar: `لقد أنضممت الى المحموعة ${name}`,
                   userId: userId,
                 };
-           await Model.Notification.create(data);
+                await Model.Notification.create(data);
                 await Model.UserGroup.create({ groupId, userId });
                 const options = await Model.OptionGroup.findAll({
                   raw: true,
                   where: { groupId },
-                  attributes: ['optionId']
+                  attributes: ["optionId"],
                 });
                 for (const i of options) {
-                  await Model.OptionGroup.create({ groupId, userId, optionId: i.optionId, selected: 0 });
+                  await Model.OptionGroup.create({
+                    groupId,
+                    userId,
+                    optionId: i.optionId,
+                    selected: 0,
+                  });
                 }
               }
-
             }
           }
           group.save();
@@ -464,15 +495,14 @@ exports.addUsers = async (req, res, next) => {
                 },
               });
               if (!handle) Model.UserGroup.create({ groupId, userId });
-              const options = await Model.OptionGroup.findAll({ groupId })
+              const options = await Model.OptionGroup.findAll({ groupId });
               for (const opiton of options)
                 await Model.OptionGroup.create({
                   userId: userId,
                   selected: false,
                   optionId: opiton.id,
-                  groupId
-
-                })
+                  groupId,
+                });
             } else {
               // const err = new Error(`user has ID-${userId} doesn't exist`);
               const err = new Error(`user has ID ${userId},who doesn't exist`);
@@ -560,33 +590,47 @@ exports.changeLeader = async (req, res, next) => {
 exports.getAll = async (req, res, next) => {
   try {
     checkValidate(req);
-    const UserDepartment = await Model.UserDepartment.findAll({ where: { userId: req.tokenUserId } })
-    let data = []
+    const UserDepartment = await Model.UserDepartment.findAll({
+      where: { userId: req.tokenUserId },
+    });
+    let data = [];
     for (const i of UserDepartment) {
       let groups = await Model.Group.findAll({
         raw: true,
-        where: { departmentId: i.departmentId }
-        , include: {
+        where: { departmentId: i.departmentId },
+        include: {
           model: Model.Department,
-          attributes: ['name']
-        }
+          attributes: ["name"],
+        },
       });
-      data.push(...groups)
+      data.push(...groups);
     }
-    let data1 = []
+    let data1 = [];
     for (const item of data) {
-      let handle = null
-      const qg = await Model.QuestionGroup.findOne({ where: { groupId: item.id }, order: [['createdAt', 'DESC']] })
-      qg && console.log(qg.questionId)
+      let handle = null;
+      const qg = await Model.QuestionGroup.findOne({
+        where: { groupId: item.id },
+        order: [["createdAt", "DESC"]],
+      });
+      qg && console.log(qg.questionId);
       if (qg)
-        handle = await Model.Answer.findOne({ where: { groupId: item.id, questionId: qg.questionId } })
-      const isAnswer = handle ? true : false
-      let leader = null, master = null
+        handle = await Model.Answer.findOne({
+          where: { groupId: item.id, questionId: qg.questionId },
+        });
+      const isAnswer = handle ? true : false;
+      let leader = null,
+        master = null;
       if (item.leader)
-        leader = await Model.User.findOne({ where: { id: item.leader }, attributes: ['email', "fullName", 'id', "picture"] })
+        leader = await Model.User.findOne({
+          where: { id: item.leader },
+          attributes: ["email", "fullName", "id", "picture"],
+        });
       if (item.master)
-        master = await Model.User.findOne({ where: { id: item.master }, attributes: ['email', "fullName", 'id', "picture"] })
-      data1.push({ ...item, isAnswer, leader, master })
+        master = await Model.User.findOne({
+          where: { id: item.master },
+          attributes: ["email", "fullName", "id", "picture"],
+        });
+      data1.push({ ...item, isAnswer, leader, master });
     }
 
     res.status(200).send(data1);
@@ -594,52 +638,56 @@ exports.getAll = async (req, res, next) => {
     if (!err.statusCode) err.statusCode = 500;
     next(err);
   }
-}
+};
 exports.GetLastQuestion = async (req, res, next) => {
   try {
     checkValidate(req);
-    const { id } = req.params
+    const { id } = req.params;
     const data = await Model.Chat.findAll({
-      where: { room: id, type: { [Op.eq]: "question" } }, order: [['createdAt', 'DESC']], attributes: ['id', "type", "createdAt"],
+      where: { room: id, type: { [Op.eq]: "question" } },
+      order: [["createdAt", "DESC"]],
+      attributes: ["id", "type", "createdAt"],
       include: {
         model: Model.Question,
-        attributes: ["body", 'type', "id"],
+        attributes: ["body", "type", "id"],
         require: false,
         include: {
           model: Model.Option,
           attributes: ["body", "id"],
-          include: { model: Model.OptionGroup, attributes: ["optionId", "userId", "selected", "groupId", "id"] }
-        }
-      }
-    })
-    const handle = data.map(item => {
+          include: {
+            model: Model.OptionGroup,
+            attributes: ["optionId", "userId", "selected", "groupId", "id"],
+          },
+        },
+      },
+    });
+    const handle = data.map((item) => {
       if (item.dataValues.type === "question") {
-        const { id, body, type, Options } = item.dataValues.Question.dataValues
-        console.log(item.dataValues)
-        const options = []
+        const { id, body, type, Options } = item.dataValues.Question.dataValues;
+        console.log(item.dataValues);
+        const options = [];
         for (const item of Options) {
-          const { body, OptionGroups } = item.dataValues
-          let counter = 0, handelSelected = false, id = null;
+          const { body, OptionGroups } = item.dataValues;
+          let counter = 0,
+            handelSelected = false,
+            id = null;
           for (const OptionGroup of OptionGroups) {
-            id = OptionGroup.dataValues.optionId
-            const { selected, userId } = OptionGroup.dataValues
+            id = OptionGroup.dataValues.optionId;
+            const { selected, userId } = OptionGroup.dataValues;
             if (selected) counter++;
-            if (userId === req.tokenUserId && selected)
-              handelSelected = true;
+            if (userId === req.tokenUserId && selected) handelSelected = true;
           }
-          options.push({ body, counter, selected: handelSelected, id })
+          options.push({ body, counter, selected: handelSelected, id });
         }
         // console.log(Options)
         if (options.length)
-          return { ...item.dataValues, Question: { id, type, body, options } }
-        else
-          return { ...item.dataValues, Question: { id, type, body } }
-      }
-      else return item
-    })
+          return { ...item.dataValues, Question: { id, type, body, options } };
+        else return { ...item.dataValues, Question: { id, type, body } };
+      } else return item;
+    });
     res.status(200).send(handle[0]);
   } catch (err) {
     if (!err.statusCode) err.statusCode = 500;
     next(err);
   }
-}
+};

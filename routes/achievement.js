@@ -7,7 +7,7 @@ const asyncWrapper = require("../utils/asyncWrapper");
 const router = express.Router();
 
 router.get("/", isAuth, asyncWrapper(achievmentsController.getAllAchievments));
-router.get(
+router.post(
   "/pdf/:achievmentId",
   isAuth,
   asyncWrapper(uploadPdf.single("pdf")),

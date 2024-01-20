@@ -8,16 +8,30 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
+      this.belongsTo(models.Achievments, {
+        foreignKey: "achievmentId",
+        constraints: true,
+        onDelete: "CASCADE",
+      })
+      this.belongsTo(models.Department, {
+        foreignKey: "departmentId",
+        constraints: true,
+        onDelete: "CASCADE",
+      })
+      this.belongsTo(models.User, {
+        foreignKey: "userId",
+        constraints: true,
+        onDelete: "CASCADE",
+      })
       // define association here
-      this.belongsTo(models.Achievments, { foreignKey: "achievmentId" });
-      this.belongsTo(models.Department, { foreignKey: "departmentId" });
-      this.belongsTo(models.User, { foreignKey: "userId" });
+    
     }
   }
   AchievementDepartment.init(
     {
         achievmentId: DataTypes.INTEGER,
         departmentId: DataTypes.INTEGER,
+        userId: DataTypes.INTEGER,
     },
     {
       sequelize,

@@ -33,11 +33,12 @@ const pageSelect = {
     "educationalCourses",
     "competitions",
   ],
-  4: ["id", "subject", "activities", "projects", "performingTasks", "comments"],
+  4: ["id", "subject", "activities", "projects", "performingTasks", "comments", "pdf"],
 };
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 const selectAll = [
+  "view",
   ...new Set(
     pageSelect["1"].concat(pageSelect["2"], pageSelect["3"], pageSelect["4"])
   ),
@@ -79,18 +80,18 @@ exports.updateView = async (req, res) => {
   }
   if (departmentId) {
     const exist = await Model.AchievementDepartment.findOne({
-      where: { departmentId, userId },
+      where: { achievmentId },
+      attributes : ["achievmentId"]
     });
     if (exist) {
       return res
         .status(400)
-        .json({ message: "You already shared achievment wit this department" });
+        .json({ message: "You already shared  this achievment" });
     }
 
     await Model.AchievementDepartment.create({
       departmentId,
       achievmentId: achievment.id,
-      userId,
     });
   }
   await Model.Achievments.update(
@@ -225,7 +226,7 @@ exports.deleteImage = async (req, res) => {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 exports.getLastAchievmentMainData = async (req, res) => {
   const userId = req.tokenUserId;
-  let achievement = await Model.Achievments.findOne({ where: { userId } });
+  let achievement = await Model.Achievments.findOne({order: [['createdAt', 'DESC']], where: { userId } });
   if (!achievement)
     return res
       .status(404)
@@ -249,6 +250,7 @@ exports.uploadPdf = async (req, res) => {
   });
   if (!achievement)
     return res.status(404).json({ message: "Achievment not found" });
+  console.log(req.file);
   await Model.Achievments.update(
     { pdf: req.file.path },
     { where: { id: achievmentId } }
