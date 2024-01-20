@@ -119,6 +119,7 @@ exports.get = async (req, res, next) => {
               },
             },
           });
+          console.log(achievmentDep);
           handel.hasPdf = achievmentDep ? true : false;
           handel.pdfLink = achievmentDep
             ? achievmentDep.Achievements?.pdf
