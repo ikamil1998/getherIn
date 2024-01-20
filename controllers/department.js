@@ -51,6 +51,7 @@ exports.get = async (req, res, next) => {
             members_count: users_group.count,
           });
         }
+        
       
         res.status(200).json({
           id: department.dataValues.id,

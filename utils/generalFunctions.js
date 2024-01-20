@@ -12,7 +12,7 @@ const pdfStorage = multer.diskStorage({
     cb(null, "files");
   },
   filename: (req, file, cb) => {
-    cb(null, new Date().toISOString() + "-" - file.originalname);
+    cb(null, new Date().toISOString() + "-"  + file.originalname);
   },
 });
 const fileFilter = (req, file, cb) => {
