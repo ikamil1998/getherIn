@@ -61,7 +61,7 @@ exports.get = async (req, res, next) => {
           where: { departmentId: id },
           include: [
             {
-              model: Achievements,
+              model: Model.Achievements,
               where: {
                 userId,
                 view: {
