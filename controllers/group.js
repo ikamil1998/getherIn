@@ -110,6 +110,7 @@ exports.get = async (req, res, next) => {
             where: { departmentId: department.id },
             include: {
               model: Model.Achievments,
+              attributes:["pdf", "view", "userId"],
               where: {
                 userId: handel.id,
                 view: {
@@ -118,14 +119,11 @@ exports.get = async (req, res, next) => {
               },
             },
           });
-          console.log(achievmentDep?.dataValues?.Achievements?.dataValues?.pdf);
-          console.log(achievmentDep?.dataValues?.Achievements?.dataValues);
-          console.log(achievmentDep?.dataValues?.Achievements);
-          console.log(achievmentDep?.dataValues);
+          
           console.log(achievmentDep);
           handel.hasPdf = achievmentDep ? true : false;
           handel.pdfLink = achievmentDep
-            ? achievmentDep.dataValues?.Achievements?.dataValues?.pdf
+            ? achievmentDep?.dataValues?.Achievments?.dataValues?.pdf
             : null;
           Users.push(handel);
         }
