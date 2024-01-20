@@ -59,15 +59,17 @@ exports.get = async (req, res, next) => {
         }
         const achieve = await Model.AchievementDepartment.findOne({
           where: { departmentId: id },
-          include: {
-            model: Achievements,
-            where  : {
-              userId ,
-              view : {
-                [Op.in]: [2, 3]
-              }
-            }
-          },
+          include: [
+            {
+              model: Achievements,
+              where: {
+                userId,
+                view: {
+                  [Op.in]: [2, 3],
+                },
+              },
+            },
+          ],
         });
 
         res.status(200).json({
@@ -77,8 +79,8 @@ exports.get = async (req, res, next) => {
           url: department.dataValues.url,
           members_count: users.count,
           Groups: data,
-          shared : achieve ? true : false,
-          achievmentId : achieve ? achieve.achievmentId : null
+          shared: achieve ? true : false,
+          achievmentId: achieve ? achieve.achievmentId : null,
         });
       } else {
         const err = new Error(
