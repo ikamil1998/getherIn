@@ -45,6 +45,7 @@ const pageSelect = {
     "pdf",
   ],
 };
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 const selectAll = [
@@ -74,6 +75,47 @@ const validateUpdateAchievMent = (body) => {
       error.statusCode = 400;
       throw error;
   }
+};
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+exports.getOneAchievmentById = async (achievmentId, pageNumber) => {
+  const achievement = await Model.Achievments.findOne({
+    where: { id: achievmentId },
+    attributes: pageSelect[`${pageNumber}`]
+      ? pageSelect[`${pageNumber}`]
+      : selectAll,
+  });
+  const images = await Model.Image.findAll({
+    where: { achievementId: achievmentId },
+  });
+  achievement.dataValues.logoImages = images.filter(
+    (ele) => ele.module == "logoImages"
+  );
+  achievement.dataValues.achievementsImages = images.filter(
+    (ele) => ele.module == "achievementsImages"
+  );
+  achievement.dataValues.volunteerWorkImages = images.filter(
+    (ele) => ele.module == "volunteerWorkImages"
+  );
+  achievement.dataValues.certificatesImages = images.filter(
+    (ele) => ele.module == "certificatesImages"
+  );
+  achievement.dataValues.educationalCoursesImages = images.filter(
+    (ele) => ele.module == "educationalCoursesImages"
+  );
+  achievement.dataValues.competitionsImages = images.filter(
+    (ele) => ele.module == "competitionsImages"
+  );
+  achievement.dataValues.activitiesImages = images.filter(
+    (ele) => ele.module == "activitiesImages"
+  );
+  achievement.dataValues.projectsImages = images.filter(
+    (ele) => ele.module == "projectsImages"
+  );
+  achievement.dataValues.performingTasksImages = images.filter(
+    (ele) => ele.module == "performingTasksImages"
+  );
+  return achievement;
 };
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -289,12 +331,12 @@ exports.updateAchievment = async (req, res) => {
   if (!achievement) {
     return res.status(404).json({ message: "Achievment not found" });
   }
-  const updated = await Model.Achievments.update(
+  let newAcheivment = await Model.Achievments.update(
     { ...req.body },
     {
       where: {
         userId,
-        id : achievementId
+        id: achievementId,
       },
       returning: true,
     }
@@ -309,7 +351,11 @@ exports.updateAchievment = async (req, res) => {
         achievementId,
       }));
       await Model.Image.bulkCreate(logoBulkInsert);
-      return res.status(200).json({ achievement });
+      newAcheivment = await this.getOneAchievmentById(
+        achievementId,
+        req.body.pageNumber
+      );
+      return res.status(200).json({ achievement: newAcheivment });
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     case 3:
@@ -355,7 +401,11 @@ exports.updateAchievment = async (req, res) => {
           competitionsImagesBulkInsert
         )
       );
-      return res.status(200).json({ achievement });
+      newAcheivment = await this.getOneAchievmentById(
+        achievementId,
+        req.body.pageNumber
+      );
+      return res.status(200).json({ achievement: newAcheivment });
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -386,9 +436,17 @@ exports.updateAchievment = async (req, res) => {
         )
       );
 
-      return res.status(200).json({ achievement });
-      default:
-        return res.status(200).json({ achievement });
+      newAcheivment = await this.getOneAchievmentById(
+        achievementId,
+        req.body.pageNumber
+      );
+      return res.status(200).json({ achievement: newAcheivment });
+    default:
+      newAcheivment = await this.getOneAchievmentById(
+        achievementId,
+        req.body.pageNumber
+      );
+      return res.status(200).json({ achievement: newAcheivment });
   }
 };
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -439,4 +497,45 @@ exports.getOneAchievementFromLink = async (req, res) => {
     (ele) => ele.module == "performingTasksImages"
   );
   return res.status(200).json({ data: achievement });
+};
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+exports.getOneAchievmentById = async (achievmentId, pageNumber) => {
+  const achievement = await Model.Achievments.findOne({
+    where: { id: achievmentId },
+    attributes: pageSelect[`${pageNumber}`]
+      ? pageSelect[`${pageNumber}`]
+      : selectAll,
+  });
+  const images = await Model.Image.findAll({
+    where: { achievementId: achievmentId },
+  });
+  achievement.dataValues.logoImages = images.filter(
+    (ele) => ele.module == "logoImages"
+  );
+  achievement.dataValues.achievementsImages = images.filter(
+    (ele) => ele.module == "achievementsImages"
+  );
+  achievement.dataValues.volunteerWorkImages = images.filter(
+    (ele) => ele.module == "volunteerWorkImages"
+  );
+  achievement.dataValues.certificatesImages = images.filter(
+    (ele) => ele.module == "certificatesImages"
+  );
+  achievement.dataValues.educationalCoursesImages = images.filter(
+    (ele) => ele.module == "educationalCoursesImages"
+  );
+  achievement.dataValues.competitionsImages = images.filter(
+    (ele) => ele.module == "competitionsImages"
+  );
+  achievement.dataValues.activitiesImages = images.filter(
+    (ele) => ele.module == "activitiesImages"
+  );
+  achievement.dataValues.projectsImages = images.filter(
+    (ele) => ele.module == "projectsImages"
+  );
+  achievement.dataValues.performingTasksImages = images.filter(
+    (ele) => ele.module == "performingTasksImages"
+  );
+  return achievement;
 };
