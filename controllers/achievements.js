@@ -16,6 +16,7 @@ const pageSelect = {
     "schoolName",
     "city",
     "fullName",
+    "email",
     "age",
     "stage",
     "academicYear",
