@@ -128,7 +128,7 @@ exports.getAllAchievments = async (req, res) => {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 exports.getDate = async (req, res) => {
-  return res.status(200).json({ data: ["1445", "1444"]});
+  return res.status(200).json({ data: ["1445", "1444"] });
 };
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -286,8 +286,19 @@ exports.updateAchievment = async (req, res) => {
   let achievement = await Model.Achievments.findOne({
     where: { id: achievementId, userId },
   });
-  if (!achievement)
+  if (!achievement) {
     return res.status(404).json({ message: "Achievment not found" });
+  }
+  await Model.Achievments.update(
+    { ...req.body },
+    {
+      where: {
+        userId: id,
+        id : achievementId
+      },
+      returning: true,
+    }
+  );
   switch (req.body.pageNumber) {
     case 1:
       const { logoImages } = getImagesLocation(req);
@@ -322,7 +333,7 @@ exports.updateAchievment = async (req, res) => {
       const certificatesImagesBulkInsert = certificatesImages.map((path) => ({
         path,
         module: "certificatesImages",
-        achievementCartId: cart ? cart.id : newCart.id,
+        achievementId,
       }));
       const educationalCoursesImagesBulkInsert = educationalCoursesImages.map(
         (path) => ({
@@ -389,7 +400,7 @@ exports.getOneAchievementFromLink = async (req, res) => {
         [Op.in]: [1, 3],
       },
     },
-    attributes: ["id","pdf"]
+    attributes: ["id", "pdf"],
   });
   if (!achievement) {
     return res.status(404).json({ message: "Achievment not found" });
