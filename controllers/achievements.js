@@ -289,7 +289,7 @@ exports.updateAchievment = async (req, res) => {
   if (!achievement) {
     return res.status(404).json({ message: "Achievment not found" });
   }
-  await Model.Achievments.update(
+  const updated = await Model.Achievments.update(
     { ...req.body },
     {
       where: {
@@ -309,7 +309,7 @@ exports.updateAchievment = async (req, res) => {
         achievementId,
       }));
       await Model.Image.bulkCreate(logoBulkInsert);
-      return res.status(200).json({ achievment: newCart });
+      return res.status(200).json({ achievement });
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     case 3:
@@ -355,7 +355,7 @@ exports.updateAchievment = async (req, res) => {
           competitionsImagesBulkInsert
         )
       );
-      return res.status(200).json({ achievment });
+      return res.status(200).json({ achievement });
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
