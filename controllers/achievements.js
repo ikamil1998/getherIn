@@ -293,7 +293,7 @@ exports.updateAchievment = async (req, res) => {
     { ...req.body },
     {
       where: {
-        userId: id,
+        userId,
         id : achievementId
       },
       returning: true,
