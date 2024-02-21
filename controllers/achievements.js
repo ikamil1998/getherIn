@@ -387,6 +387,8 @@ exports.updateAchievment = async (req, res) => {
       );
 
       return res.status(200).json({ achievement });
+      default:
+        return res.status(200).json({ achievement });
   }
 };
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
