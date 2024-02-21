@@ -7,7 +7,7 @@ const asyncWrapper = require("../utils/asyncWrapper");
 const router = express.Router();
 
 router.get("/", isAuth, asyncWrapper(achievmentsController.getAllAchievments));
-router.get("/date", isAuth, asyncWrapper(achievmentsController.getDate));
+router.get("/date", asyncWrapper(achievmentsController.getDate));
 router.post(
   "/pdf/:achievmentId",
   isAuth,

@@ -9,6 +9,7 @@ const {
   updateAchievementPage4,
 } = require("../validations/achievments");
 const { Op } = require("sequelize");
+const { getImagesLocation } = require("./achievementsCart");
 const pageSelect = {
   1: [
     "id",
