@@ -118,7 +118,7 @@ exports.createAchievmentsCart = async (req, res) => {
     : await Model.AchievmentsCart.create({ ...req.body, userId: id });
   switch (req.body.pageNumber) {
     case 1:
-      const { logoImages } = getImagesLocation(req);
+      const { logoImages } = this.getImagesLocation(req);
 
       const logoBulkInsert = logoImages.map((path) => ({
         path,
@@ -136,7 +136,7 @@ exports.createAchievmentsCart = async (req, res) => {
         certificatesImages,
         educationalCoursesImages,
         competitionsImages,
-      } = getImagesLocation(req);
+      } = this.getImagesLocation(req);
       const achievementsImagesBulkInsert = achievementsImages.map((path) => ({
         path,
         module: "achievementsImages",
@@ -178,7 +178,7 @@ exports.createAchievmentsCart = async (req, res) => {
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     case 4:
       const { activitiesImages, projectsImages, performingTasksImages } =
-        getImagesLocation(req);
+      this.getImagesLocation(req);
       const activitiesImagesBulkInsert = activitiesImages.map((path) => ({
         path,
         module: "activitiesImages",
