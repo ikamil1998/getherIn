@@ -133,7 +133,7 @@ exports.updateView = async (req, res) => {
   }
   if (departmentId) {
     const exist = await Model.AchievementDepartment.findOne({
-      where: { achievmentId },
+      where: { achievmentId},
       attributes: ["achievmentId"],
     });
     if (exist) {
@@ -166,6 +166,9 @@ exports.getAllAchievments = async (req, res) => {
   const totalItems = await Model.Achievments.count({
     where: { userId },
   });
+  for(let achievment of achievments.dataValues){
+    achievment.numOfShares = 1
+  }
   return res.status(200).json({ data: achievments, count: totalItems });
 };
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
