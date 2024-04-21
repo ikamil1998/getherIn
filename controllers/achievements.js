@@ -166,7 +166,7 @@ exports.getAllAchievments = async (req, res) => {
   const totalItems = await Model.Achievments.count({
     where: { userId },
   });
-  for(let achievment of achievments.dataValues){
+  for(let achievment of achievments){
     achievment.numOfShares = 1
   }
   return res.status(200).json({ data: achievments, count: totalItems });
