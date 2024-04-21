@@ -167,7 +167,7 @@ exports.getAllAchievments = async (req, res) => {
     where: { userId },
   });
   for(let achievment of achievments){
-    achievment.numOfShares = 1
+    achievment.dataValues.numOfShares = 1
   }
   return res.status(200).json({ data: achievments, count: totalItems });
 };
