@@ -21,7 +21,6 @@ router.get(
 );
 router.get(
   "/link/:achievmentId",
-  isAuth,
   asyncWrapper(achievmentsController.getOneAchievementFromLink)
 );
 router.get(
