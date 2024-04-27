@@ -464,7 +464,6 @@ exports.getOneAchievementFromLink = async (req, res) => {
         [Op.in]: [1, 3],
       },
     },
-    attributes: ["id", "pdf"],
   });
   if (!achievement) {
     return res.status(404).json({ message: "Achievment not found" });
