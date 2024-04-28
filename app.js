@@ -27,10 +27,12 @@ const achievementCartRoutes = require("./routes/achievementCart.js");
 const achievementsRoutes = require("./routes/achievement.js");
 const imagesRoutes = require("./routes/image.js");
 const { changeValidForConsumerPackage } = require("./utils");
+const cors =require ("cors")
 
 const app = express();
 
 const winston = require('winston')
+app.use(cors());
 const consoleTransport = new winston.transports.Console()
 const myWinstonOptions = {
   transports: [consoleTransport]
