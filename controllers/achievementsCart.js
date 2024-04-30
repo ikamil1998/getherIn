@@ -207,7 +207,7 @@ exports.createAchievmentsCart = async (req, res) => {
       })
       delete cartToAdd.dataValues.id
 
-      const achievment = await Model.Achievments.create({...cartToAdd.dataValues });
+      const achievment = await Model.Achievments.create({...cartToAdd.dataValues,view : 1});
       console.log(achievment.id);
       await Model.Image.update(
         { achievementId: achievment.dataValues.id },
