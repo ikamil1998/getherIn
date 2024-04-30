@@ -460,9 +460,6 @@ exports.getOneAchievementFromLink = async (req, res) => {
   const achievement = await Model.Achievments.findOne({
     where: {
       id: achievmentId,
-      view: {
-        [Op.in]: [1, 3],
-      },
     },
   });
   if (!achievement) {
