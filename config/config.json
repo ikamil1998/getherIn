@@ -23,11 +23,12 @@
       "collate": "utf8_general_ci"
     }
   },
+ 
   "production": {
     "username": "gathshyt_root",
     "password": "A8pKhU45wuLDV2S",
     "database": "gathshyt_db",
-    "host": "66.29.140.167",
+    "host": "https://pma.gatherin.me",
     "dialect": "mysql",
     "logging": false,
     "define": {
