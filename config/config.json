@@ -28,7 +28,7 @@
     "username": "gathshyt_root",
     "password": "A8pKhU45wuLDV2S",
     "database": "gathshyt_db",
-    "host": "https://pma.gatherin.me",
+    "host": "127.0.0.1",
     "dialect": "mysql",
     "logging": false,
     "define": {
