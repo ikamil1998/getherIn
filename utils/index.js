@@ -19,8 +19,8 @@ var transporter = nodemailer.createTransport(
     port: 465,
     secure: true,
     auth: {
-      user: 'code@gatherin.fun',
-      pass: 'Hmpwzyb-qbesk9a-xtcw4pf'
+      user: process.env.EMAIL || "info@gatherin.fun",
+      pass: process.env.PASSWORD || 'Bv5c7-umx3s-dvijs'
     }
   }
 );
