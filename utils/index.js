@@ -44,7 +44,7 @@ exports.sendVerificationCodeToUser = (user_email) => {
   console.log(user_email)
   const code = makeCode(6);
   const message = {
-    from: "code@gatherin.fun", // Sender address
+    from: "info@gatherin.fun", // Sender address
     to: user_email, // List of recipients
     subject: "Verification Code | GatherIn", // Subject line
     text: "verification Code " + code, // Plain text body
@@ -81,7 +81,7 @@ exports.sendVerificationCodeToUser = (user_email) => {
 exports.sendVerificationCodeForPasswordToUser = (user_email) => {
   const code = makeCode(6);
   const message = {
-    from: "code@gatherin.fun", // Sender address
+    from: "info@gatherin.fun", // Sender address
     to: user_email, // List of recipients
     subject: "Verification Code | GatherIn", // Subject line
     text: "verification Code " + code, // Plain text body
