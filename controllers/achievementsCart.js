@@ -213,7 +213,7 @@ exports.createAchievmentsCart = async (req, res) => {
         { achievementId: achievment.dataValues.id },
         { where: { achievementCartId: cart ? cart.id : newCart.id } }
       );
-      return res.status(200).json({ achievment: newCart });
+      return res.status(200).json({ achievment: newCart, achievementId : achievment.dataValues.id  });
     default:
       return res.status(200).json({ achievment: newCart });
   }
